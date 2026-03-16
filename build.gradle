@@ -1,0 +1,39 @@
+plugins {
+    id 'base'
+    id 'org.springframework.boot' version '4.0.3' apply false
+}
+
+ext {
+    mapstructVersion = '1.6.3'
+    lombokVersion = '1.18.38'
+    podamVersion = '8.0.2.RELEASE'
+}
+
+allprojects {
+    group = 'com.iproddy'
+    version = '1.0'
+
+    repositories {
+        mavenCentral()
+    }
+}
+
+subprojects {
+    apply plugin: 'java'
+
+    java {
+        toolchain {
+            languageVersion = JavaLanguageVersion.of(25)
+        }
+    }
+
+    configurations {
+        compileOnly {
+            extendsFrom annotationProcessor
+        }
+    }
+
+    tasks.withType(Test).configureEach {
+        useJUnitPlatform()
+    }
+}

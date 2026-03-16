@@ -1,0 +1,67 @@
+package com.iproddy.orderservice.util;
+
+import com.iproddy.orderservice.controller.dto.*;
+import com.iproddy.orderservice.model.entity.Order;
+import com.iproddy.orderservice.model.enums.OrderStatus;
+import uk.co.jemos.podam.api.PodamFactory;
+import uk.co.jemos.podam.api.PodamFactoryImpl;
+
+import java.math.BigDecimal;
+import java.util.List;
+import java.util.Random;
+
+public final class TestDataFactory {
+
+    private static final PodamFactory podam = new PodamFactoryImpl();
+    private static final Random random = new Random();
+
+    public static Order createOrder() {
+        Order order = podam.manufacturePojo(Order.class);
+        order.setId(null);
+        order.getItems().forEach(it -> {
+            it.setId(null);
+            it.setOrder(order);
+        });
+        return order;
+    }
+
+    public static OrderDto.Request.Base createOrderBaseRequest() {
+
+        CustomerInfoDto.Request.Base customer =
+                podam.manufacturePojo(CustomerInfoDto.Request.Base.class);
+
+        ShippingAddressDto.Request.Base address =
+                podam.manufacturePojo(ShippingAddressDto.Request.Base.class);
+
+        List<OrderItemDto.Request.Base> items = createItems(3);
+
+        return new OrderDto.Request.Base(
+                customer,
+                address,
+                items,
+                OrderStatus.PAID
+        );
+    }
+
+    private static List<OrderItemDto.Request.Base> createItems(int count) {
+        return java.util.stream.IntStream.range(0, count)
+                .mapToObj(i -> createItem())
+                .toList();
+    }
+
+    private static OrderItemDto.Request.Base createItem() {
+
+        OrderItemDto.Request.Base base =
+                podam.manufacturePojo(OrderItemDto.Request.Base.class);
+
+        int quantity = random.nextInt(5) + 1;
+
+        BigDecimal price = BigDecimal.valueOf(random.nextInt(9000) + 1000);
+
+        return new OrderItemDto.Request.Base(
+                base.productName(),
+                quantity,
+                price
+        );
+    }
+}
