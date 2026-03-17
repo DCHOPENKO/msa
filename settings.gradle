@@ -1,0 +1,13 @@
+pluginManagement {
+    repositories {
+        mavenCentral()
+        gradlePluginPortal()
+    }
+}
+
+rootProject.name = 'msa'
+
+include 'common'
+include 'order-service'
+include 'payment-service'
+include 'delivery-service'
