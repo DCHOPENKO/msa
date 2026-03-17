@@ -1,4 +1,4 @@
-package com.iproddy.paymentservice.model.enums;
+package com.iproddy.common.model.enums;
 
 public enum PaymentStatus {
     CREATED,

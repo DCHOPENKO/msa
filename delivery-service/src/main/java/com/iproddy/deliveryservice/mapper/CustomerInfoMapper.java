@@ -1,7 +1,7 @@
 package com.iproddy.deliveryservice.mapper;
 
 import com.iproddy.common.model.vo.CustomerInfo;
-import com.iproddy.deliveryservice.controller.dto.CustomerInfoDto;
+import com.iproddy.common.dto.http.CustomerInfoDto;
 import org.mapstruct.Mapper;
 
 @Mapper(componentModel = "spring")

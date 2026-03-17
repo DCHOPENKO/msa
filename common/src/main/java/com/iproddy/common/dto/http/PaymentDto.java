@@ -1,7 +1,8 @@
-package com.iproddy.paymentservice.controller.dto;
+package com.iproddy.common.dto.http;
 
-import com.iproddy.paymentservice.model.enums.PaymentMethod;
-import com.iproddy.paymentservice.model.enums.PaymentStatus;
+
+import com.iproddy.common.model.enums.PaymentMethod;
+import com.iproddy.common.model.enums.PaymentStatus;
 
 import java.math.BigDecimal;
 

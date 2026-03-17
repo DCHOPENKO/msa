@@ -1,9 +1,9 @@
 package com.iproddy.orderservice.controller;
 
 import com.iproddy.orderservice.IntegrationTestBase;
-import com.iproddy.orderservice.controller.dto.OrderItemDto;
+import com.iproddy.common.dto.http.OrderItemDto;
 import com.iproddy.orderservice.model.entity.Order;
-import com.iproddy.orderservice.model.enums.OrderStatus;
+import com.iproddy.common.model.enums.OrderStatus;
 import com.iproddy.orderservice.util.TestDataFactory;
 import org.junit.jupiter.api.Test;
 import org.springframework.transaction.annotation.Transactional;

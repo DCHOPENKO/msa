@@ -1,4 +1,4 @@
-package com.iproddy.orderservice.controller.dto;
+package com.iproddy.common.dto.http;
 
 import java.math.BigDecimal;
 

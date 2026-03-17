@@ -1,4 +1,4 @@
-package com.iproddy.deliveryservice.model.enums;
+package com.iproddy.common.model.enums;
 
 public enum DeliveryStatus {
     CREATED,

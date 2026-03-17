@@ -1,8 +1,11 @@
 package com.iproddy.orderservice.util;
 
-import com.iproddy.orderservice.controller.dto.*;
+import com.iproddy.common.dto.http.CustomerInfoDto;
+import com.iproddy.common.dto.http.OrderDto;
+import com.iproddy.common.dto.http.OrderItemDto;
+import com.iproddy.common.dto.http.ShippingAddressDto;
 import com.iproddy.orderservice.model.entity.Order;
-import com.iproddy.orderservice.model.enums.OrderStatus;
+import com.iproddy.common.model.enums.OrderStatus;
 import uk.co.jemos.podam.api.PodamFactory;
 import uk.co.jemos.podam.api.PodamFactoryImpl;
 

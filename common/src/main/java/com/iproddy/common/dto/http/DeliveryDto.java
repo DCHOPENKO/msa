@@ -1,6 +1,6 @@
-package com.iproddy.deliveryservice.controller.dto;
+package com.iproddy.common.dto.http;
 
-import com.iproddy.deliveryservice.model.enums.DeliveryStatus;
+import com.iproddy.common.model.enums.DeliveryStatus;
 
 public enum DeliveryDto {
     ;

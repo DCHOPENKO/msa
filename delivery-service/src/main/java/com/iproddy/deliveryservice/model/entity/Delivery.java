@@ -3,7 +3,7 @@ package com.iproddy.deliveryservice.model.entity;
 import com.iproddy.common.model.entity.BaseEntity;
 import com.iproddy.common.model.vo.CustomerInfo;
 import com.iproddy.common.model.vo.ShippingAddress;
-import com.iproddy.deliveryservice.model.enums.DeliveryStatus;
+import com.iproddy.common.model.enums.DeliveryStatus;
 import jakarta.persistence.Embedded;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;

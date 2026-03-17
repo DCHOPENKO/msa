@@ -2,7 +2,7 @@ package com.iproddy.deliveryservice.controller;
 
 import com.iproddy.deliveryservice.IntegrationTestBase;
 import com.iproddy.deliveryservice.model.entity.Delivery;
-import com.iproddy.deliveryservice.model.enums.DeliveryStatus;
+import com.iproddy.common.model.enums.DeliveryStatus;
 import com.iproddy.deliveryservice.util.TestDataFactory;
 import org.junit.jupiter.api.Test;
 

@@ -1,6 +1,6 @@
 package com.iproddy.paymentservice.util;
 
-import com.iproddy.paymentservice.controller.dto.PaymentDto;
+import com.iproddy.common.dto.http.PaymentDto;
 import com.iproddy.paymentservice.model.entity.Payment;
 import uk.co.jemos.podam.api.PodamFactory;
 import uk.co.jemos.podam.api.PodamFactoryImpl;

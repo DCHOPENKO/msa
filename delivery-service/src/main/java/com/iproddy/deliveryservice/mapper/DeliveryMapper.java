@@ -1,6 +1,6 @@
 package com.iproddy.deliveryservice.mapper;
 
-import com.iproddy.deliveryservice.controller.dto.DeliveryDto;
+import com.iproddy.common.dto.http.DeliveryDto;
 import com.iproddy.deliveryservice.model.entity.Delivery;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;

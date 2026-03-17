@@ -1,4 +1,4 @@
-package com.iproddy.paymentservice.controller.dto;
+package com.iproddy.common.dto.http;
 
 public enum CardInfoDto {
     ;

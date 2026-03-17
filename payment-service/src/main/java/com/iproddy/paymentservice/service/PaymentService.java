@@ -1,8 +1,8 @@
 package com.iproddy.paymentservice.service;
 
 import com.iproddy.common.exception.NotFoundException;
+import com.iproddy.common.model.enums.PaymentStatus;
 import com.iproddy.paymentservice.model.entity.Payment;
-import com.iproddy.paymentservice.model.enums.PaymentStatus;
 import com.iproddy.paymentservice.repository.PaymentRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;

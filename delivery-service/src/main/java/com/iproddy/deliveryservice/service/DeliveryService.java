@@ -2,7 +2,7 @@ package com.iproddy.deliveryservice.service;
 
 import com.iproddy.common.exception.NotFoundException;
 import com.iproddy.deliveryservice.model.entity.Delivery;
-import com.iproddy.deliveryservice.model.enums.DeliveryStatus;
+import com.iproddy.common.model.enums.DeliveryStatus;
 import com.iproddy.deliveryservice.repository.DeliveryRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;

@@ -1,6 +1,6 @@
 package com.iproddy.paymentservice.mapper;
 
-import com.iproddy.paymentservice.controller.dto.CardInfoDto;
+import com.iproddy.common.dto.http.CardInfoDto;
 import com.iproddy.paymentservice.model.vo.CardInfo;
 import org.mapstruct.Mapper;
 

@@ -1,8 +1,8 @@
 package com.iproddy.paymentservice.model.entity;
 
 import com.iproddy.common.model.entity.BaseEntity;
-import com.iproddy.paymentservice.model.enums.PaymentMethod;
-import com.iproddy.paymentservice.model.enums.PaymentStatus;
+import com.iproddy.common.model.enums.PaymentMethod;
+import com.iproddy.common.model.enums.PaymentStatus;
 import com.iproddy.paymentservice.model.vo.CardInfo;
 import jakarta.persistence.Embedded;
 import jakarta.persistence.Entity;

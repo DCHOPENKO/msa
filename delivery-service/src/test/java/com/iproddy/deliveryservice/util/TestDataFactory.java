@@ -1,6 +1,6 @@
 package com.iproddy.deliveryservice.util;
 
-import com.iproddy.deliveryservice.controller.dto.DeliveryDto;
+import com.iproddy.common.dto.http.DeliveryDto;
 import com.iproddy.deliveryservice.model.entity.Delivery;
 import uk.co.jemos.podam.api.PodamFactory;
 import uk.co.jemos.podam.api.PodamFactoryImpl;
