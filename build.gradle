@@ -1,12 +1,15 @@
 plugins {
     id 'base'
     id 'org.springframework.boot' version '4.0.3' apply false
+    id 'io.spring.dependency-management' version '1.1.7' apply false
 }
 
 ext {
     mapstructVersion = '1.6.3'
     lombokVersion = '1.18.38'
     podamVersion = '8.0.2.RELEASE'
+    springCloudVersion = '2025.1.1'
+    openApiVersion = '3.0.2'
 }
 
 allprojects {

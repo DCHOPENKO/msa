@@ -26,7 +26,7 @@ public class PaymentControllerTest extends IntegrationTestBase {
         mockMvc.perform(post("/api/v1/payments")
                         .contentType(APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(request)))
-                .andExpect(status().isOk())
+                .andExpect(status().isCreated())
                 .andExpect(jsonPath("$.id").isNumber())
                 .andExpect(jsonPath("$.status").value(PaymentStatus.CREATED.name()))
                 .andExpect(jsonPath("$.cardInfo.cardNumber").value(request.cardInfo().cardNumber()))
@@ -66,7 +66,7 @@ public class PaymentControllerTest extends IntegrationTestBase {
         assertThat(paymentRepository.findById(id)).isNotEmpty();
 
         mockMvc.perform(delete("/api/v1/payments/{id}", id))
-                .andExpect(status().isOk());
+                .andExpect(status().isNoContent());
 
         assertThat(paymentRepository.findById(id)).isEmpty();
     }

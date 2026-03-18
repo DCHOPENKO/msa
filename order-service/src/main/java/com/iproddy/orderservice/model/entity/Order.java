@@ -42,6 +42,8 @@ public class Order extends BaseEntity {
 
     private BigDecimal totalAmount;
 
+    private Long paymentId;
+
     public void clearItems() {
         for (OrderItem item : items) {
             item.setOrder(null);

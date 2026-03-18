@@ -7,6 +7,7 @@ import com.iproddy.deliveryservice.model.entity.Delivery;
 import com.iproddy.deliveryservice.service.DeliveryService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -14,6 +15,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
@@ -22,23 +24,27 @@ import java.util.List;
 @RestController
 @RequestMapping("api/v1/deliveries")
 @RequiredArgsConstructor
-public class DeliveryController {
+public class DeliveryController implements DeliveryControllerDoc {
 
     private final DeliveryService deliveryService;
     private final DeliveryMapper deliveryMapper;
 
+    @Override
     @GetMapping
     public List<DeliveryDto.Response.Base> findAll() {
         List<Delivery> deliveries = deliveryService.findAll();
         return deliveryMapper.toResponseList(deliveries);
     }
 
+    @Override
     @GetMapping("/{id}")
     public DeliveryDto.Response.Base findById(@PathVariable Long id) {
         Delivery delivery = deliveryService.findByIdOrThrow(id);
         return deliveryMapper.toResponse(delivery);
     }
 
+    @Override
+    @ResponseStatus(HttpStatus.CREATED)
     @PostMapping
     public DeliveryDto.Response.Base create(@RequestBody DeliveryDto.Request.Base request) {
         log.info("Starting create new delivery with payload: {}", JsonUtil.stringify(request));
@@ -48,6 +54,7 @@ public class DeliveryController {
         return deliveryMapper.toResponse(saved);
     }
 
+    @Override
     @PutMapping("/{id}")
     public DeliveryDto.Response.Base update(@PathVariable Long id, @RequestBody DeliveryDto.Request.Base request) {
         log.info("Starting updating delivery with id: {}, payload: {}", id, JsonUtil.stringify(request));
@@ -58,6 +65,8 @@ public class DeliveryController {
         return deliveryMapper.toResponse(updated);
     }
 
+    @Override
+    @ResponseStatus(HttpStatus.NO_CONTENT)
     @DeleteMapping("/{id}")
     public void delete(@PathVariable Long id) {
         log.info("Attempt to delete delivery with id: {}", id);
