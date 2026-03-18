@@ -1,8 +1,8 @@
 package com.iproddy.paymentservice.controller;
 
-import com.iproddy.common.model.enums.PaymentStatus;
 import com.iproddy.paymentservice.IntegrationTestBase;
 import com.iproddy.paymentservice.model.entity.Payment;
+import com.iproddy.paymentservice.model.enums.PaymentStatus;
 import com.iproddy.paymentservice.util.TestDataFactory;
 import org.junit.jupiter.api.Test;
 

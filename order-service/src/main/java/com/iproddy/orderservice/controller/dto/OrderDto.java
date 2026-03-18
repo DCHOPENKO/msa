@@ -1,6 +1,6 @@
-package com.iproddy.common.dto.http;
+package com.iproddy.orderservice.controller.dto;
 
-import com.iproddy.common.model.enums.OrderStatus;
+import com.iproddy.orderservice.model.enums.OrderStatus;
 
 import java.math.BigDecimal;
 import java.util.List;

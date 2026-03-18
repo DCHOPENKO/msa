@@ -2,7 +2,7 @@ package com.iproddy.orderservice.service;
 
 import com.iproddy.common.exception.NotFoundException;
 import com.iproddy.orderservice.model.entity.Order;
-import com.iproddy.common.model.enums.OrderStatus;
+import com.iproddy.orderservice.model.enums.OrderStatus;
 import com.iproddy.orderservice.repository.OrderRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;

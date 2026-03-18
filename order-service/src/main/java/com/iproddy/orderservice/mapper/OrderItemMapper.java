@@ -1,6 +1,6 @@
 package com.iproddy.orderservice.mapper;
 
-import com.iproddy.common.dto.http.OrderItemDto;
+import com.iproddy.orderservice.controller.dto.OrderItemDto;
 import com.iproddy.orderservice.model.entity.OrderItem;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;

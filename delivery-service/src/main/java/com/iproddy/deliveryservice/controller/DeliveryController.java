@@ -1,7 +1,7 @@
 package com.iproddy.deliveryservice.controller;
 
 import com.iproddy.common.util.JsonUtil;
-import com.iproddy.common.dto.http.DeliveryDto;
+import com.iproddy.deliveryservice.controller.dto.DeliveryDto;
 import com.iproddy.deliveryservice.mapper.DeliveryMapper;
 import com.iproddy.deliveryservice.model.entity.Delivery;
 import com.iproddy.deliveryservice.service.DeliveryService;

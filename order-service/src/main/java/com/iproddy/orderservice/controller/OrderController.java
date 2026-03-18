@@ -1,7 +1,7 @@
 package com.iproddy.orderservice.controller;
 
 import com.iproddy.common.util.JsonUtil;
-import com.iproddy.common.dto.http.OrderDto;
+import com.iproddy.orderservice.controller.dto.OrderDto;
 import com.iproddy.orderservice.mapper.OrderMapper;
 import com.iproddy.orderservice.model.entity.Order;
 import com.iproddy.orderservice.service.OrderService;

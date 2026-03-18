@@ -1,6 +1,6 @@
 package com.iproddy.orderservice.mapper;
 
-import com.iproddy.common.dto.http.ShippingAddressDto;
+import com.iproddy.orderservice.controller.dto.ShippingAddressDto;
 import com.iproddy.common.model.vo.ShippingAddress;
 import org.mapstruct.Mapper;
 

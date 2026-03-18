@@ -1,7 +1,7 @@
 package com.iproddy.paymentservice.controller;
 
 import com.iproddy.common.util.JsonUtil;
-import com.iproddy.common.dto.http.PaymentDto;
+import com.iproddy.paymentservice.controller.dto.PaymentDto;
 import com.iproddy.paymentservice.mapper.PaymentMapper;
 import com.iproddy.paymentservice.model.entity.Payment;
 import com.iproddy.paymentservice.service.PaymentService;

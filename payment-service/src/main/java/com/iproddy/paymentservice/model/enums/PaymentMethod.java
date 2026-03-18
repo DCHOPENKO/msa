@@ -1,4 +1,4 @@
-package com.iproddy.common.model.enums;
+package com.iproddy.paymentservice.model.enums;
 
 public enum PaymentMethod {
     CARD,

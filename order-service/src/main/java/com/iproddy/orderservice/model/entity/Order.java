@@ -1,7 +1,7 @@
 package com.iproddy.orderservice.model.entity;
 
 import com.iproddy.common.model.entity.BaseEntity;
-import com.iproddy.common.model.enums.OrderStatus;
+import com.iproddy.orderservice.model.enums.OrderStatus;
 import com.iproddy.common.model.vo.CustomerInfo;
 import com.iproddy.common.model.vo.ShippingAddress;
 import jakarta.persistence.CascadeType;
