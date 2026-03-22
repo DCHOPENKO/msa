@@ -18,11 +18,21 @@ public interface OrderMapper {
 
     @Mappings({
             @Mapping(target = "id", ignore = true),
+            @Mapping(target = "paymentId", ignore = true),
             @Mapping(target = "createdAt", ignore = true),
             @Mapping(target = "updatedAt", ignore = true),
             @Mapping(target = "totalAmount", ignore = true)
     })
-    Order toEntity(OrderDto.Request.Base request);
+    Order toEntity(OrderDto.Request.Update request);
+
+    @Mappings({
+            @Mapping(target = "id", ignore = true),
+            @Mapping(target = "paymentId", ignore = true),
+            @Mapping(target = "createdAt", ignore = true),
+            @Mapping(target = "updatedAt", ignore = true),
+            @Mapping(target = "totalAmount", ignore = true)
+    })
+    Order toEntity(OrderDto.Request.Create request);
 
     OrderDto.Response.Base toResponse(Order entity);
 

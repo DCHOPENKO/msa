@@ -1,6 +1,10 @@
 package com.iproddy.orderservice.util;
 
-import com.iproddy.orderservice.controller.dto.*;
+import com.iproddy.orderservice.controller.dto.CustomerInfoDto;
+import com.iproddy.orderservice.controller.dto.OrderDto;
+import com.iproddy.orderservice.controller.dto.OrderItemDto;
+import com.iproddy.orderservice.controller.dto.ShippingAddressDto;
+import com.iproddy.orderservice.http.client.payment.dto.PaymentMethod;
 import com.iproddy.orderservice.model.entity.Order;
 import com.iproddy.orderservice.model.enums.OrderStatus;
 import uk.co.jemos.podam.api.PodamFactory;
@@ -18,6 +22,7 @@ public final class TestDataFactory {
     public static Order createOrder() {
         Order order = podam.manufacturePojo(Order.class);
         order.setId(null);
+        order.setPaymentId(null);
         order.getItems().forEach(it -> {
             it.setId(null);
             it.setOrder(order);
@@ -25,7 +30,7 @@ public final class TestDataFactory {
         return order;
     }
 
-    public static OrderDto.Request.Base createOrderBaseRequest() {
+    public static OrderDto.Request.Update createOrderUpdateRequest() {
 
         CustomerInfoDto.Request.Base customer =
                 podam.manufacturePojo(CustomerInfoDto.Request.Base.class);
@@ -35,10 +40,32 @@ public final class TestDataFactory {
 
         List<OrderItemDto.Request.Base> items = createItems(3);
 
-        return new OrderDto.Request.Base(
+        return new OrderDto.Request.Update(
                 customer,
                 address,
                 items,
+                OrderStatus.PAID
+        );
+    }
+
+    public static OrderDto.Request.Create createOrderCreateRequest() {
+        CustomerInfoDto.Request.Base customer =
+                podam.manufacturePojo(CustomerInfoDto.Request.Base.class);
+
+        ShippingAddressDto.Request.Base address =
+                podam.manufacturePojo(ShippingAddressDto.Request.Base.class);
+
+        List<OrderItemDto.Request.Base> items = createItems(3);
+
+        OrderDto.Request.Create.CardInfo cardInfo =
+                podam.manufacturePojo(OrderDto.Request.Create.CardInfo.class);
+
+        return new OrderDto.Request.Create(
+                customer,
+                address,
+                items,
+                cardInfo,
+                PaymentMethod.CARD,
                 OrderStatus.PAID
         );
     }

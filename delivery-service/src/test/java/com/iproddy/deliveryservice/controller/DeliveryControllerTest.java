@@ -26,7 +26,7 @@ public class DeliveryControllerTest extends IntegrationTestBase {
         mockMvc.perform(post("/api/v1/deliveries")
                         .contentType(APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(request)))
-                .andExpect(status().isOk())
+                .andExpect(status().isCreated())
                 .andExpect(jsonPath("$.id").isNumber())
                 .andExpect(jsonPath("$.status").value(DeliveryStatus.CREATED.name()))
                 .andExpect(jsonPath("$.customerInfo.customerName").value(request.customerInfo().customerName()))
@@ -69,7 +69,7 @@ public class DeliveryControllerTest extends IntegrationTestBase {
         assertThat(deliveryRepository.findById(id)).isNotEmpty();
 
         mockMvc.perform(delete("/api/v1/deliveries/{id}", id))
-                .andExpect(status().isOk());
+                .andExpect(status().isNoContent());
 
         assertThat(deliveryRepository.findById(id)).isEmpty();
     }
