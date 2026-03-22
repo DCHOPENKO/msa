@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Objects;
 
 @Slf4j
 @Service
@@ -32,23 +33,22 @@ public class OrderService {
 
     public Order save(Order entity) {
         entity.setId(null);
-        entity.setStatus(OrderStatus.NEW);
+        entity.setStatus(OrderStatus.CREATED);
         entity.replaceItems(entity.getItems());
         return orderRepository.save(entity);
     }
 
-    // TODO need to refact (need to implement more good solution for distributed locks for orderItems)
     public Order update(Order entity) {
         Order order = findByIdOrThrow(entity.getId());
+        if (order.getStatus() == OrderStatus.CREATED) {
+            order.replaceItems(entity.getItems());
+        } else {
+            log.info("For Order with id: %s updating shopping cart will be ignored. Order already in processing with status: %s"
+                    .formatted(order.getId(), order.getStatus()));
+        }
         order.setCustomerInfo(entity.getCustomerInfo());
         order.setShippingAddress(entity.getShippingAddress());
         order.setStatus(entity.getStatus());
-        if (order.getPaymentId() == null) {
-            order.replaceItems(entity.getItems());
-        } else {
-            log.info("For Order with id: %s updating shopping cart will be ignored. Payment with (paymentId: %s) already in processing"
-                    .formatted(order.getId(), order.getPaymentId()));
-        }
         return orderRepository.save(order);
     }
 
@@ -57,7 +57,11 @@ public class OrderService {
     }
 
     public void setPaymentId(Order entity, Long paymentId) {
+        if (paymentId == null || Objects.equals(paymentId, entity.getPaymentId())) {
+            return;
+        }
         entity.setPaymentId(paymentId);
+        entity.setStatus(OrderStatus.PAYMENT_PROCESSING);
         orderRepository.save(entity);
     }
 }

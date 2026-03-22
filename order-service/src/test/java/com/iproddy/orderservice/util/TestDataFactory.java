@@ -44,7 +44,7 @@ public final class TestDataFactory {
                 customer,
                 address,
                 items,
-                OrderStatus.PAID
+                OrderStatus.CREATED
         );
     }
 
@@ -66,7 +66,7 @@ public final class TestDataFactory {
                 items,
                 cardInfo,
                 PaymentMethod.CARD,
-                OrderStatus.PAID
+                OrderStatus.CREATED
         );
     }
 

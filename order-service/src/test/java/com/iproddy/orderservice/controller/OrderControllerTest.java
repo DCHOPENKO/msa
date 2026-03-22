@@ -40,7 +40,7 @@ public class OrderControllerTest extends IntegrationTestBase {
                         .content(objectMapper.writeValueAsString(request)))
                 .andExpect(status().isCreated())
                 .andExpect(jsonPath("$.id").isNumber())
-                .andExpect(jsonPath("$.status").value(OrderStatus.NEW.name()))
+                .andExpect(jsonPath("$.status").value(OrderStatus.CREATED.name()))
                 .andExpect(jsonPath("$.customerInfo.customerName").value(request.customerInfo().customerName()))
                 .andExpect(jsonPath("$.shippingAddress.city").value(request.shippingAddress().city()))
                 .andExpect(jsonPath("$.items.length()").value(3))
@@ -69,7 +69,7 @@ public class OrderControllerTest extends IntegrationTestBase {
                         .content(objectMapper.writeValueAsString(request)))
                 .andExpect(status().isCreated())
                 .andExpect(jsonPath("$.id").isNumber())
-                .andExpect(jsonPath("$.status").value(OrderStatus.NEW.name()))
+                .andExpect(jsonPath("$.status").value(OrderStatus.PAYMENT_PROCESSING.name()))
                 .andExpect(jsonPath("$.customerInfo.customerName").value(request.customerInfo().customerName()))
                 .andExpect(jsonPath("$.shippingAddress.city").value(request.shippingAddress().city()))
                 .andExpect(jsonPath("$.items.length()").value(3))
@@ -181,6 +181,7 @@ public class OrderControllerTest extends IntegrationTestBase {
         Order order = TestDataFactory.createOrder();
         if (withPayment) {
             order.setPaymentId(1L);
+            order.setStatus(OrderStatus.PAYMENT_PROCESSING);
         }
         return orderRepository.save(order);
     }

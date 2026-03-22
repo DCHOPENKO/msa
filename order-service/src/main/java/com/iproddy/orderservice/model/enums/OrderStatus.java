@@ -1,8 +1,9 @@
 package com.iproddy.orderservice.model.enums;
 
 public enum OrderStatus {
-    NEW,
-    PAID,
+    CREATED,
+    PAYMENT_PROCESSING,
+    PAYMENT_COMPLETED,
     SHIPPED,
     CANCELLED
 }
