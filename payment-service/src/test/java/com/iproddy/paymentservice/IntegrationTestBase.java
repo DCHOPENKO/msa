@@ -1,5 +1,6 @@
 package com.iproddy.paymentservice;
 
+import com.iproddy.paymentservice.repository.IdempotencyRepository;
 import com.iproddy.paymentservice.repository.PaymentRepository;
 import org.junit.jupiter.api.AfterEach;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,12 +20,15 @@ public class IntegrationTestBase {
     @Autowired
     public PaymentRepository paymentRepository;
     @Autowired
+    public IdempotencyRepository idempotencyRepository;
+    @Autowired
     public ObjectMapper objectMapper;
 
 
     @AfterEach
     void cleanup() {
         paymentRepository.deleteAll();
+        idempotencyRepository.deleteAll();
     }
 
 }

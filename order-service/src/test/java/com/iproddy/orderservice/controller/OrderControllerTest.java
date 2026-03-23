@@ -46,7 +46,7 @@ public class OrderControllerTest extends IntegrationTestBase {
                 .andExpect(jsonPath("$.items.length()").value(3))
                 .andExpect(jsonPath("$.totalAmount").value(totalAmount));
 
-        verify(paymentFeignClient, times(0)).createPayment(any());
+        verify(paymentFeignClient, times(0)).createPayment(any(), any());
 
         List<Order> allOrders = orderRepository.findAll();
         assertThat(allOrders).hasSize(1);
@@ -60,7 +60,7 @@ public class OrderControllerTest extends IntegrationTestBase {
         var request = TestDataFactory.createOrderCreateRequest();
         BigDecimal totalAmount = calculateTotalAmount(request.items());
 
-        when(paymentFeignClient.createPayment(any()))
+        when(paymentFeignClient.createPayment(any(), any()))
                 .thenReturn(new PaymentDto.Response.Base(paymentId, 1L, totalAmount, request.paymentMethod(), PaymentStatus.CREATED, null));
 
 
@@ -76,7 +76,7 @@ public class OrderControllerTest extends IntegrationTestBase {
                 .andExpect(jsonPath("$.totalAmount").value(totalAmount))
                 .andExpect(jsonPath("$.paymentId").value(paymentId));
 
-        verify(paymentFeignClient, times(1)).createPayment(any());
+        verify(paymentFeignClient, times(1)).createPayment(any(), any());
 
         List<Order> allOrders = orderRepository.findAll();
         assertThat(allOrders).hasSize(1);
