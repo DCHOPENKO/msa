@@ -2,7 +2,7 @@ package com.iproddy.orderservice.controller;
 
 import com.iproddy.common.util.JsonUtil;
 import com.iproddy.orderservice.controller.dto.OrderDto;
-import com.iproddy.orderservice.http.client.payment.PaymentFeignClient;
+import com.iproddy.orderservice.http.client.payment.PaymentClient;
 import com.iproddy.orderservice.http.client.payment.dto.PaymentDto;
 import com.iproddy.orderservice.mapper.OrderMapper;
 import com.iproddy.orderservice.mapper.PaymentDtoMapper;
@@ -31,7 +31,7 @@ public class OrderController implements OrderControllerDoc {
 
     private final OrderService orderService;
     private final OrderMapper orderMapper;
-    private final PaymentFeignClient paymentFeignClient;
+    private final PaymentClient paymentClient;
     private final PaymentDtoMapper paymentDtoMapper;
 
     @Override
@@ -58,8 +58,8 @@ public class OrderController implements OrderControllerDoc {
         PaymentDto.Response.Base paymentResponse = null;
         if (request.paymentMethod() != null) {
             log.info("Executing payment creation process for order with id: {}", saved.getId());
-            PaymentDto.Request.Base paymentRequest = paymentDtoMapper.toRequest(order, request);
-            paymentResponse = paymentFeignClient.createPayment(paymentRequest);
+            PaymentDto.Request.Base paymentRequest = paymentDtoMapper.toRequest(saved, request);
+            paymentResponse = paymentClient.createPayment(paymentRequest);
             orderService.setPaymentId(saved, paymentResponse.id());
             log.info("Payment creation process finished for order with id: {}, paymentId: {}", saved.getId(), paymentResponse.id());
         }

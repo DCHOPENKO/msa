@@ -1,7 +1,11 @@
 package com.iproddy.paymentservice.controller;
 
+import com.iproddy.common.util.constant.WebConstants;
 import com.iproddy.paymentservice.IntegrationTestBase;
+import com.iproddy.paymentservice.controller.dto.PaymentDto;
+import com.iproddy.paymentservice.model.entity.IdempotencyKey;
 import com.iproddy.paymentservice.model.entity.Payment;
+import com.iproddy.paymentservice.model.enums.IdempotencyKeyStatus;
 import com.iproddy.paymentservice.model.enums.PaymentStatus;
 import com.iproddy.paymentservice.util.TestDataFactory;
 import org.junit.jupiter.api.Test;
@@ -14,6 +18,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -24,6 +29,7 @@ public class PaymentControllerTest extends IntegrationTestBase {
         var request = TestDataFactory.createPaymentBaseRequest();
 
         mockMvc.perform(post("/api/v1/payments")
+                        .header(WebConstants.IDEMPOTENT_KEY_HEADER_NAME, 1L)
                         .contentType(APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(request)))
                 .andExpect(status().isCreated())
@@ -31,6 +37,39 @@ public class PaymentControllerTest extends IntegrationTestBase {
                 .andExpect(jsonPath("$.status").value(PaymentStatus.CREATED.name()))
                 .andExpect(jsonPath("$.cardInfo.cardNumber").value(request.cardInfo().cardNumber()))
                 .andExpect(jsonPath("$.amount").value(request.amount()));
+    }
+
+    @Test
+    void createPayment_shouldNotPersistNewPaymentAndReturnResponseFromIdempotencyKeyCache() throws Exception {
+        var request = TestDataFactory.createPaymentBaseRequest();
+        IdempotencyKey idempotencyKeyData = initIdempotencyKey(IdempotencyKeyStatus.COMPLETED);
+
+        assertThat(paymentRepository.findAll()).isEmpty();
+
+        mockMvc.perform(post("/api/v1/payments")
+                        .header(WebConstants.IDEMPOTENT_KEY_HEADER_NAME, idempotencyKeyData.getKey())
+                        .contentType(APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(request)))
+                .andExpect(status().isCreated())
+                .andExpect(content().json(idempotencyKeyData.getResponse(), true));
+
+        assertThat(paymentRepository.findAll()).isEmpty();
+    }
+
+    @Test
+    void createPayment_shouldNotPersistNewPaymentAndReturnConflictStatusCodeWhilePaymentCreationInProcess() throws Exception {
+        var request = TestDataFactory.createPaymentBaseRequest();
+        IdempotencyKey idempotencyKeyData = initIdempotencyKey(IdempotencyKeyStatus.PENDING);
+
+        assertThat(paymentRepository.findAll()).isEmpty();
+
+        mockMvc.perform(post("/api/v1/payments")
+                        .header(WebConstants.IDEMPOTENT_KEY_HEADER_NAME, idempotencyKeyData.getKey())
+                        .contentType(APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(request)))
+                .andExpect(status().isConflict());
+
+        assertThat(paymentRepository.findAll()).isEmpty();
     }
 
     @Test
@@ -42,6 +81,7 @@ public class PaymentControllerTest extends IntegrationTestBase {
         var request = TestDataFactory.createPaymentBaseRequest();
 
         mockMvc.perform(put("/api/v1/payments/{id}", payment.getId())
+                        .header(WebConstants.IDEMPOTENT_KEY_HEADER_NAME, 1L)
                         .contentType(APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(request)))
                 .andExpect(status().isOk())
@@ -96,5 +136,17 @@ public class PaymentControllerTest extends IntegrationTestBase {
     private Payment initPayment() {
         Payment payment = TestDataFactory.createPayment();
         return paymentRepository.save(payment);
+    }
+
+    private IdempotencyKey initIdempotencyKey(IdempotencyKeyStatus status) {
+        IdempotencyKey idempotencyKey = TestDataFactory.createIdempotencyKey();
+        idempotencyKey.setStatus(status);
+        if (status == IdempotencyKeyStatus.COMPLETED) {
+            PaymentDto.Response.Base response = TestDataFactory.createPaymentBaseResponse();
+            idempotencyKey.setKey(response.orderId());
+            idempotencyKey.setResponse(objectMapper.writeValueAsString(response));
+            idempotencyKey.setStatusCode(201);
+        }
+        return idempotencyRepository.save(idempotencyKey);
     }
 }
