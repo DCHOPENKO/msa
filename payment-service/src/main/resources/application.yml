@@ -16,4 +16,25 @@ spring:
       ddl-auto: update
     show-sql: true
 
+resilience4j:
+  retry:
+    instances:
+      paymentControllerRetry:
+        maxAttempts: 3
+        waitDuration: 500ms
+        ignoreExceptions:
+          - com.iproddy.common.exception.NotFoundException
+
+  circuitbreaker:
+    instances:
+      paymentControllerCircuitBreaker:
+        registerHealthIndicator: true
+        slidingWindowSize: 50
+        failureRateThreshold: 50
+        waitDurationInOpenState: 5s
+        permittedNumberOfCallsInHalfOpenState: 10
+        minimumNumberOfCalls: 20
+        ignoreExceptions:
+          - com.iproddy.common.exception.NotFoundException
+
 

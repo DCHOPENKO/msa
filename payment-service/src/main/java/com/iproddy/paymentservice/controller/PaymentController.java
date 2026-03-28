@@ -5,6 +5,8 @@ import com.iproddy.paymentservice.controller.dto.PaymentDto;
 import com.iproddy.paymentservice.mapper.PaymentMapper;
 import com.iproddy.paymentservice.model.entity.Payment;
 import com.iproddy.paymentservice.service.PaymentService;
+import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
+import io.github.resilience4j.retry.annotation.Retry;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -24,6 +26,8 @@ import java.util.List;
 @RestController
 @RequestMapping("api/v1/payments")
 @RequiredArgsConstructor
+@Retry(name = "paymentControllerRetry")
+@CircuitBreaker(name = "paymentControllerCircuitBreaker")
 public class PaymentController implements PaymentControllerDoc {
 
     private final PaymentService paymentService;

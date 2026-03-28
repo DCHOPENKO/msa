@@ -5,6 +5,8 @@ import com.iproddy.deliveryservice.controller.dto.DeliveryDto;
 import com.iproddy.deliveryservice.mapper.DeliveryMapper;
 import com.iproddy.deliveryservice.model.entity.Delivery;
 import com.iproddy.deliveryservice.service.DeliveryService;
+import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
+import io.github.resilience4j.retry.annotation.Retry;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -24,6 +26,8 @@ import java.util.List;
 @RestController
 @RequestMapping("api/v1/deliveries")
 @RequiredArgsConstructor
+@Retry(name = "deliveryControllerRetry")
+@CircuitBreaker(name = "deliveryControllerCircuitBreaker")
 public class DeliveryController implements DeliveryControllerDoc {
 
     private final DeliveryService deliveryService;

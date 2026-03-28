@@ -10,6 +10,7 @@ ext {
     podamVersion = '8.0.2.RELEASE'
     springCloudVersion = '2025.1.1'
     openApiVersion = '3.0.2'
+    resilience4jVersiopn = '2.3.0'
 }
 
 allprojects {
