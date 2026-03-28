@@ -2,6 +2,8 @@ package com.iproddy.orderservice.http.client.payment;
 
 import com.iproddy.orderservice.http.client.payment.dto.PaymentDto;
 import feign.FeignException;
+import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
+import io.github.resilience4j.retry.annotation.Retry;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
@@ -18,6 +20,8 @@ public class PaymentClient {
     private final PaymentFeignClient paymentFeignClient;
     private final JsonMapper mapper;
 
+    @Retry(name = "paymentClientRetry")
+    @CircuitBreaker(name = "paymentClientCircuitBreaker")
     public PaymentDto.Response.Base createPayment(PaymentDto.Request.Base request) {
         try {
             return paymentFeignClient.createPayment(request.orderId(), request);

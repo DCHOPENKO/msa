@@ -8,6 +8,7 @@ import com.iproddy.orderservice.mapper.OrderMapper;
 import com.iproddy.orderservice.mapper.PaymentDtoMapper;
 import com.iproddy.orderservice.model.entity.Order;
 import com.iproddy.orderservice.service.OrderService;
+import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -27,6 +28,7 @@ import java.util.List;
 @RestController
 @RequestMapping("api/v1/orders")
 @RequiredArgsConstructor
+@CircuitBreaker(name = "orderControllerCircuitBreaker")
 public class OrderController implements OrderControllerDoc {
 
     private final OrderService orderService;

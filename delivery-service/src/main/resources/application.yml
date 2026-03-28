@@ -15,3 +15,16 @@ spring:
     hibernate:
       ddl-auto: update
     show-sql: true
+
+resilience4j:
+  circuitbreaker:
+    instances:
+      deliveryControllerCircuitBreaker:
+        registerHealthIndicator: true
+        slidingWindowSize: 50
+        failureRateThreshold: 50
+        waitDurationInOpenState: 5s
+        permittedNumberOfCallsInHalfOpenState: 10
+        minimumNumberOfCalls: 20
+        ignoreExceptions:
+          - com.iproddy.common.exception.NotFoundException
