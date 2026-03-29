@@ -11,6 +11,7 @@ ext {
     springCloudVersion = '2025.1.1'
     openApiVersion = '3.0.2'
     resilience4jVersiopn = '2.3.0'
+    bucket4jVersion = '8.10.1'
 }
 
 allprojects {
