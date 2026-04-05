@@ -1,14 +1,11 @@
 package com.iproddy.orderservice;
 
-import com.iproddy.orderservice.http.client.payment.PaymentFeignClient;
 import com.iproddy.orderservice.repository.OrderRepository;
 import org.junit.jupiter.api.AfterEach;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc;
 import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.context.bean.override.mockito.MockReset;
-import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 import tools.jackson.databind.ObjectMapper;
 
@@ -23,10 +20,6 @@ public class IntegrationTestBase {
     public OrderRepository orderRepository;
     @Autowired
     public ObjectMapper objectMapper;
-
-    @MockitoBean(reset = MockReset.BEFORE)
-    protected PaymentFeignClient paymentFeignClient;
-
 
     @AfterEach
     void cleanup() {

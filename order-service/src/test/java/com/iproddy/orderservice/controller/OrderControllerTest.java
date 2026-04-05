@@ -2,12 +2,15 @@ package com.iproddy.orderservice.controller;
 
 import com.iproddy.orderservice.IntegrationTestBase;
 import com.iproddy.orderservice.controller.dto.OrderItemDto;
+import com.iproddy.orderservice.http.client.payment.PaymentFeignClient;
 import com.iproddy.orderservice.http.client.payment.dto.PaymentDto;
 import com.iproddy.orderservice.http.client.payment.dto.PaymentStatus;
 import com.iproddy.orderservice.model.entity.Order;
 import com.iproddy.orderservice.model.enums.OrderStatus;
 import com.iproddy.orderservice.util.TestDataFactory;
 import org.junit.jupiter.api.Test;
+import org.springframework.test.context.bean.override.mockito.MockReset;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
@@ -27,6 +30,9 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 public class OrderControllerTest extends IntegrationTestBase {
+
+    @MockitoBean(reset = MockReset.BEFORE)
+    private PaymentFeignClient paymentFeignClient;
 
     @Test
     @Transactional
