@@ -29,4 +29,10 @@ resilience4j:
         ignoreExceptions:
           - com.iproddy.common.exception.NotFoundException
 
+rate-limiter:
+  sliding-window:
+    per-second: 10
+    per-minute: 100
+    per-hour: 1000
+
 

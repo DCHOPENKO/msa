@@ -57,3 +57,16 @@ resilience4j:
           - feign.FeignException
         ignoreExceptions:
           - java.lang.RuntimeException
+
+  bulkhead:
+    instances:
+      paymentClientBulkhead:
+        maxConcurrentCalls: 5
+        maxWaitDuration: 0s
+
+  ratelimiter:
+    instances:
+      paymentClientRateLimiter:
+        limitForPeriod: 10
+        limitRefreshPeriod: 1s
+        timeoutDuration: 0s

@@ -13,6 +13,7 @@ dependencies {
     implementation "org.springdoc:springdoc-openapi-starter-webmvc-ui:${openApiVersion}"
 
     implementation "io.github.resilience4j:resilience4j-spring-boot3:${resilience4jVersiopn}"
+    implementation "com.bucket4j:bucket4j-core:${bucket4jVersion}"
 
     runtimeOnly "com.h2database:h2"
 
