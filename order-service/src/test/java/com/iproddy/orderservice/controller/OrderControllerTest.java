@@ -101,7 +101,7 @@ public class OrderControllerTest extends IntegrationTestBase {
                 .andExpect(jsonPath("$.status").value(request.status().name()))
                 .andExpect(jsonPath("$.customerInfo.customerName").value(request.customerInfo().customerName()))
                 .andExpect(jsonPath("$.shippingAddress.city").value(request.shippingAddress().city()))
-                .andExpect(jsonPath("$.items.length()").value(3))
+                .andExpect(jsonPath("$.items.length()").value(request.items().size()))
                 .andExpect(jsonPath("$.totalAmount").value(totalAmount));
 
         List<Order> allOrders = orderRepository.findAll();

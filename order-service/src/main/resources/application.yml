@@ -23,3 +23,37 @@ spring:
           payment-client:
             url: http://localhost:8082
             logger-level: full
+
+resilience4j:
+  retry:
+    instances:
+      paymentClientRetry:
+        maxAttempts: 3
+        waitDuration: 1000ms
+        retryExceptions:
+          - feign.FeignException
+        ignoreExceptions:
+          - java.lang.RuntimeException
+
+  circuitbreaker:
+    instances:
+      orderControllerCircuitBreaker:
+        registerHealthIndicator: true
+        slidingWindowSize: 50
+        failureRateThreshold: 50
+        waitDurationInOpenState: 5s
+        permittedNumberOfCallsInHalfOpenState: 10
+        minimumNumberOfCalls: 20
+        ignoreExceptions:
+          - com.iproddy.common.exception.NotFoundException
+      paymentClientCircuitBreaker:
+        registerHealthIndicator: true
+        slidingWindowSize: 50
+        failureRateThreshold: 50
+        waitDurationInOpenState: 10s
+        permittedNumberOfCallsInHalfOpenState: 5
+        minimumNumberOfCalls: 10
+        recordExceptions:
+          - feign.FeignException
+        ignoreExceptions:
+          - java.lang.RuntimeException

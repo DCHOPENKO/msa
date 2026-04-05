@@ -23,6 +23,7 @@ public final class TestDataFactory {
         Order order = podam.manufacturePojo(Order.class);
         order.setId(null);
         order.setPaymentId(null);
+        order.setStatus(OrderStatus.CREATED);
         order.getItems().forEach(it -> {
             it.setId(null);
             it.setOrder(order);
