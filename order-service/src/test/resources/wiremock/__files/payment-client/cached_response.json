@@ -1,0 +1,8 @@
+{
+  "id": 1,
+  "orderId":  409,
+  "amount": 42,
+  "method": "CASH",
+  "status":  "CREATED",
+  "cardInfo": null
+}

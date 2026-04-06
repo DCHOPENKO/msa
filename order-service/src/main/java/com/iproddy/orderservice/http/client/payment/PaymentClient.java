@@ -41,7 +41,7 @@ public class PaymentClient {
         if (isAcceptable(statusCode) && bodyOptional.isPresent()) {
             return getResponse(bodyOptional.get());
         } else {
-            throw new RuntimeException("Не удалось забронировать время");
+            throw ex;
         }
     }
 

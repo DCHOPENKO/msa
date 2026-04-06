@@ -33,4 +33,5 @@ dependencies {
     testImplementation("org.springframework.boot:spring-boot-starter-webmvc-test")
     implementation 'org.springframework.cloud:spring-cloud-starter-openfeign'
     testImplementation "uk.co.jemos.podam:podam:${podamVersion}"
+    testImplementation "org.wiremock.integrations:wiremock-spring-boot:${wiremockVersion}"
 }

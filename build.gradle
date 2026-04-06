@@ -12,6 +12,7 @@ ext {
     openApiVersion = '3.0.2'
     resilience4jVersiopn = '2.3.0'
     bucket4jVersion = '8.10.1'
+    wiremockVersion = '4.2.0'
 }
 
 allprojects {

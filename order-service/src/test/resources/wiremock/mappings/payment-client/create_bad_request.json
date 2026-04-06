@@ -1,0 +1,16 @@
+{
+  "request": {
+    "method": "POST",
+    "url": "/api/v1/payments",
+    "bodyPatterns": [
+      {
+        "equalToJson": "{\"orderId\": 400}",
+        "ignoreExtraElements": true,
+        "ignoreArrayOrder": true
+      }
+    ]
+  },
+  "response": {
+    "status": 400
+  }
+}
