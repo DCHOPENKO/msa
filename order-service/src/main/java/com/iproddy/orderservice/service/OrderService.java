@@ -1,6 +1,7 @@
 package com.iproddy.orderservice.service;
 
 import com.iproddy.common.exception.NotFoundException;
+import com.iproddy.orderservice.kafla.producer.OrderPaidEventProducer;
 import com.iproddy.orderservice.model.entity.Order;
 import com.iproddy.orderservice.model.enums.OrderStatus;
 import com.iproddy.orderservice.repository.OrderRepository;
@@ -11,7 +12,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Objects;
-import java.util.Optional;
 
 @Slf4j
 @Service
@@ -20,6 +20,7 @@ import java.util.Optional;
 public class OrderService {
 
     private final OrderRepository orderRepository;
+    private final OrderPaidEventProducer orderPaidEventProducer;
 
     @Transactional(readOnly = true)
     public List<Order> findAll() {
@@ -73,6 +74,13 @@ public class OrderService {
 
     public void markAsPaid(Order entity) {
         entity.setStatus(OrderStatus.PAYMENT_COMPLETED);
+        update(entity);
+        orderPaidEventProducer.send(entity);
+    }
+
+    public void markAsShipping(Order entity, Long deliveryId) {
+        entity.setStatus(OrderStatus.SHIPPING);
+        entity.setDeliveryId(deliveryId);
         update(entity);
     }
 }
