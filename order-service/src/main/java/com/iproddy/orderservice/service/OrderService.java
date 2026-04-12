@@ -33,8 +33,8 @@ public class OrderService {
     }
 
     @Transactional(readOnly = true)
-    public Optional<Order> findById(Long id) {
-        return orderRepository.findById(id);
+    public Order findById(Long id) {
+        return orderRepository.findById(id).orElse(null);
     }
 
     public Order save(Order entity) {
@@ -69,5 +69,10 @@ public class OrderService {
         entity.setPaymentId(paymentId);
         entity.setStatus(OrderStatus.PAYMENT_PROCESSING);
         orderRepository.save(entity);
+    }
+
+    public void markAsPaid(Order entity) {
+        entity.setStatus(OrderStatus.PAYMENT_COMPLETED);
+        update(entity);
     }
 }

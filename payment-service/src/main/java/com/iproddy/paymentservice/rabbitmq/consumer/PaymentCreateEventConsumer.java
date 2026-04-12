@@ -5,7 +5,6 @@ import com.iproddy.paymentservice.mapper.PaymentMapper;
 import com.iproddy.paymentservice.model.entity.Payment;
 import com.iproddy.paymentservice.rabbitmq.consumer.dto.PaymentCreateRequestEvent;
 import com.iproddy.paymentservice.rabbitmq.producer.PaymentResponseEventProducer;
-import com.iproddy.paymentservice.rabbitmq.producer.dto.PaymentResponseEvent;
 import com.iproddy.paymentservice.service.PaymentService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -25,9 +24,11 @@ public class PaymentCreateEventConsumer {
     @RabbitListener(queues = "${rabbitmq.queue.payment-create-request_queue}")
     public void handle(PaymentCreateRequestEvent message) {
         log.info("Received message: {}", message);
-        Payment entity = paymentService.save(paymentMapper.toEntity(message));
-        log.info("Payment with id: {}, created", entity.getId());
-        PaymentResponseEvent event = paymentEventMapper.toResponse(entity);
-        paymentResponseEventProducer.send(event);
+        Payment createdEntity = paymentService.save(paymentMapper.toEntity(message));
+        log.info("Payment with id: {}, created", createdEntity.getId());
+        paymentResponseEventProducer.send(paymentEventMapper.toResponse(createdEntity));
+        Payment paidEntity = paymentService.markAsPaid(createdEntity);  // pass payment process
+        log.info("Payment successfully done for id: {}", paidEntity.getId());
+        paymentResponseEventProducer.send(paymentEventMapper.toResponse(paidEntity));
     }
 }
