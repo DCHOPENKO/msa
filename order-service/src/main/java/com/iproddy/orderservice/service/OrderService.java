@@ -11,6 +11,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 
 @Slf4j
 @Service
@@ -29,6 +30,11 @@ public class OrderService {
     public Order findByIdOrThrow(Long id) {
         return orderRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException("Order with id: %s not found".formatted(id)));
+    }
+
+    @Transactional(readOnly = true)
+    public Optional<Order> findById(Long id) {
+        return orderRepository.findById(id);
     }
 
     public Order save(Order entity) {

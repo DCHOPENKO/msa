@@ -4,7 +4,7 @@ import com.iproddy.orderservice.IntegrationTestBase;
 import com.iproddy.orderservice.controller.dto.OrderItemDto;
 import com.iproddy.orderservice.http.client.payment.PaymentFeignClient;
 import com.iproddy.orderservice.http.client.payment.dto.PaymentDto;
-import com.iproddy.orderservice.http.client.payment.dto.PaymentStatus;
+import com.iproddy.orderservice.model.enums.PaymentStatus;
 import com.iproddy.orderservice.model.entity.Order;
 import com.iproddy.orderservice.model.enums.OrderStatus;
 import com.iproddy.orderservice.util.TestDataFactory;
@@ -41,7 +41,7 @@ public class OrderControllerTest extends IntegrationTestBase {
         BigDecimal totalAmount = calculateTotalAmount(request.items());
 
 
-        mockMvc.perform(post("/api/v1/orders")
+        mockMvc.perform(post("/api/v1/orders/sync-integration")
                         .contentType(APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(request)))
                 .andExpect(status().isCreated())
@@ -70,7 +70,7 @@ public class OrderControllerTest extends IntegrationTestBase {
                 .thenReturn(new PaymentDto.Response.Base(paymentId, 1L, totalAmount, request.paymentMethod(), PaymentStatus.CREATED, null));
 
 
-        mockMvc.perform(post("/api/v1/orders")
+        mockMvc.perform(post("/api/v1/orders/sync-integration")
                         .contentType(APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(request)))
                 .andExpect(status().isCreated())

@@ -16,6 +16,7 @@ dependencies {
 
     implementation "org.springframework.boot:spring-boot-starter-web"
     implementation "org.springframework.boot:spring-boot-starter-data-jpa"
+    implementation("org.springframework.boot:spring-boot-starter-amqp")
     implementation "org.springdoc:springdoc-openapi-starter-webmvc-ui:${openApiVersion}"
 
     implementation "io.github.resilience4j:resilience4j-spring-boot3:${resilience4jVersiopn}"

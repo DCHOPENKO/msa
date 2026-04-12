@@ -111,7 +111,7 @@ public interface OrderControllerDoc {
 
             )
     })
-    OrderDto.Response.Base create(
+    OrderDto.Response.Base createWithSyncIntegration(
             @RequestBody(
                     description = "Order creation request payload", required = true,
                     content = @Content(

@@ -1,5 +1,8 @@
 package com.iproddy.orderservice.http.client.payment.dto;
 
+import com.iproddy.orderservice.model.enums.PaymentMethod;
+import com.iproddy.orderservice.model.enums.PaymentStatus;
+
 import java.math.BigDecimal;
 
 public enum PaymentDto {

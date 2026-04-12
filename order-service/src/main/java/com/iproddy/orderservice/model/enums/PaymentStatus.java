@@ -1,4 +1,4 @@
-package com.iproddy.orderservice.http.client.payment.dto;
+package com.iproddy.orderservice.model.enums;
 
 public enum PaymentStatus {
     CREATED,

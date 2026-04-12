@@ -16,6 +16,12 @@ spring:
       ddl-auto: update
     show-sql: true
 
+  rabbitmq:
+    host: '${RABBIT_HOST:localhost}'
+    port: '${RABBIT_PORT:5672}'
+    username: '${RABBIT_USERNAME:guest}'
+    password: '${RABBIT_PASSWORD:guest}'
+
   cloud:
     openfeign:
       client:
@@ -70,3 +76,8 @@ resilience4j:
         limitForPeriod: 10
         limitRefreshPeriod: 1s
         timeoutDuration: 0s
+
+rabbitmq:
+  queue:
+      payment-create-request_queue: 'q.order_service.payment_create_events'
+      payment-response_queue: 'q.payment_service.payment_events'

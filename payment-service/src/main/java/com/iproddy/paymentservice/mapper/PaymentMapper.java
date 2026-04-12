@@ -2,6 +2,8 @@ package com.iproddy.paymentservice.mapper;
 
 import com.iproddy.paymentservice.controller.dto.PaymentDto;
 import com.iproddy.paymentservice.model.entity.Payment;
+import com.iproddy.paymentservice.rabbitmq.producer.dto.PaymentResponseEvent;
+import com.iproddy.paymentservice.rabbitmq.consumer.dto.PaymentCreateRequestEvent;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.Mappings;
@@ -18,6 +20,13 @@ public interface PaymentMapper {
             @Mapping(target = "updatedAt", ignore = true),
     })
     Payment toEntity(PaymentDto.Request.Base request);
+
+    @Mappings({
+            @Mapping(target = "id", ignore = true),
+            @Mapping(target = "createdAt", ignore = true),
+            @Mapping(target = "updatedAt", ignore = true),
+    })
+    Payment toEntity(PaymentCreateRequestEvent request);
 
     PaymentDto.Response.Base toResponse(Payment entity);
 
