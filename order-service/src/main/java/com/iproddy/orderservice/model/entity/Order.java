@@ -44,6 +44,8 @@ public class Order extends BaseEntity {
 
     private Long paymentId;
 
+    private Long deliveryId;
+
     public void clearItems() {
         for (OrderItem item : items) {
             item.setOrder(null);

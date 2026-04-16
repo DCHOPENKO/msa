@@ -22,6 +22,26 @@ spring:
     username: '${RABBIT_USERNAME:guest}'
     password: '${RABBIT_PASSWORD:guest}'
 
+  kafka:
+    bootstrap-servers: localhost:9093
+    producer:
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
+      properties:
+        spring.json.type.mapping: orderPaidEvent:com.iproddy.orderservice.kafla.producer.dto.OrderPaidEvent
+    listener:
+      ack-mode: record
+    consumer:
+      group-id: order-service
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
+      auto-offset-reset: earliest
+      enable-auto-commit: true
+      properties:
+        spring.json.use.type.headers: true
+        spring.json.trusted.packages: com.iproddy.orderservice.kafla.consumer.dto,com.iproddy.deliveryservice.kafka.producer.dto
+        spring.json.type.mapping: deliveryCreateEvent:com.iproddy.orderservice.kafla.consumer.dto.DeliveryCreateEvent,com.iproddy.deliveryservice.kafka.producer.dto.DeliveryCreateEvent:com.iproddy.orderservice.kafla.consumer.dto.DeliveryCreateEvent
+
   cloud:
     openfeign:
       client:
@@ -81,3 +101,8 @@ rabbitmq:
   queue:
       payment-create-request_queue: 'q.order_service.payment_create_events'
       payment-response_queue: 'q.payment_service.payment_events'
+
+kafka:
+  topic:
+    order-service-paid-event-topic: q.order_service.paid
+    delivery-service-created-event-topic: q.delivery_service.created
