@@ -16,6 +16,26 @@ spring:
       ddl-auto: update
     show-sql: true
 
+  kafka:
+    bootstrap-servers: localhost:9093
+    producer:
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
+      properties:
+        spring.json.type.mapping: deliveryCreateEvent:com.iproddy.deliveryservice.kafka.producer.dto.DeliveryCreateEvent
+    listener:
+      ack-mode: record
+    consumer:
+      group-id: delivery-service
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
+      auto-offset-reset: earliest
+      enable-auto-commit: true
+      properties:
+        spring.json.trusted.packages: com.iproddy.orderservice.kafla.producer.dto,com.iproddy.deliveryservice.kafka.consumer.dto
+        spring.json.use.type.headers: true
+        spring.json.type.mapping: orderPaidEvent:com.iproddy.deliveryservice.kafka.consumer.dto.OrderPaidEvent,com.iproddy.orderservice.kafla.producer.dto.OrderPaidEvent:com.iproddy.deliveryservice.kafka.consumer.dto.OrderPaidEvent
+
 resilience4j:
   circuitbreaker:
     instances:
@@ -28,3 +48,8 @@ resilience4j:
         minimumNumberOfCalls: 20
         ignoreExceptions:
           - com.iproddy.common.exception.NotFoundException
+
+kafka:
+  topic:
+    order-service-paid-event-topic: q.order_service.paid
+    delivery-service-created-event-topic: q.delivery_service.created

@@ -5,8 +5,11 @@ import com.iproddy.orderservice.controller.dto.OrderDto;
 import com.iproddy.orderservice.http.client.payment.PaymentClient;
 import com.iproddy.orderservice.http.client.payment.dto.PaymentDto;
 import com.iproddy.orderservice.mapper.OrderMapper;
+import com.iproddy.orderservice.mapper.PaymentCreateRequestEventMapper;
 import com.iproddy.orderservice.mapper.PaymentDtoMapper;
 import com.iproddy.orderservice.model.entity.Order;
+import com.iproddy.orderservice.rabbitmq.producer.PaymentCreateEventProducer;
+import com.iproddy.orderservice.rabbitmq.producer.dto.PaymentCreateRequestEvent;
 import com.iproddy.orderservice.service.OrderService;
 import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
 import lombok.RequiredArgsConstructor;
@@ -34,7 +37,9 @@ public class OrderController implements OrderControllerDoc {
     private final OrderService orderService;
     private final OrderMapper orderMapper;
     private final PaymentClient paymentClient;
+    private final PaymentCreateEventProducer paymentCreateEventProducer;
     private final PaymentDtoMapper paymentDtoMapper;
+    private final PaymentCreateRequestEventMapper paymentCreateRequestEventMapper;
 
     @Override
     @GetMapping
@@ -51,10 +56,10 @@ public class OrderController implements OrderControllerDoc {
     }
 
     @Override
-    @PostMapping
+    @PostMapping("/sync-integration")
     @ResponseStatus(HttpStatus.CREATED)
-    public OrderDto.Response.Base create(@RequestBody OrderDto.Request.Create request) {
-        log.info("Starting create new order with payload: {}", JsonUtil.stringify(request));
+    public OrderDto.Response.Base createWithSyncIntegration(@RequestBody OrderDto.Request.Create request) {
+        log.info("Starting create new order (sync integration) with payload: {}", JsonUtil.stringify(request));
         Order order = orderMapper.toEntity(request);
         Order saved = orderService.save(order);
         PaymentDto.Response.Base paymentResponse = null;
@@ -65,7 +70,21 @@ public class OrderController implements OrderControllerDoc {
             orderService.setPaymentId(saved, paymentResponse.id());
             log.info("Payment creation process finished for order with id: {}, paymentId: {}", saved.getId(), paymentResponse.id());
         }
-        log.info("Order created with id {}", saved.getId());
+        log.info("Order created (sync integration) with id {}", saved.getId());
+        return orderMapper.toResponse(saved);
+    }
+
+    @PostMapping("/async-integration")
+    @ResponseStatus(HttpStatus.CREATED)
+    public OrderDto.Response.Base createWithASyncIntegration(@RequestBody OrderDto.Request.Create request) {
+        log.info("Starting create new order (async rabbit integration) with payload: {}", JsonUtil.stringify(request));
+        Order order = orderMapper.toEntity(request);
+        Order saved = orderService.save(order);
+        if (request.paymentMethod() != null) {
+            PaymentCreateRequestEvent paymentEvent = paymentCreateRequestEventMapper.toEvent(saved, request);
+            paymentCreateEventProducer.send(paymentEvent);
+        }
+        log.info("Order created (async rabbit integration) with id {}", saved.getId());
         return orderMapper.toResponse(saved);
     }
 

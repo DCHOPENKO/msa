@@ -39,6 +39,12 @@ public class PaymentService {
         return paymentRepository.save(entity);
     }
 
+    public Payment markAsPaid(Payment entity) {
+        entity.setStatus(PaymentStatus.PAID);
+        findByIdOrThrow(entity.getId());
+        return update(entity);
+    }
+
     public void delete(Long id) {
         paymentRepository.deleteById(id);
     }

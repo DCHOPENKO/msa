@@ -1,6 +1,7 @@
 package com.iproddy.orderservice.service;
 
 import com.iproddy.common.exception.NotFoundException;
+import com.iproddy.orderservice.kafla.producer.OrderPaidEventProducer;
 import com.iproddy.orderservice.model.entity.Order;
 import com.iproddy.orderservice.model.enums.OrderStatus;
 import com.iproddy.orderservice.repository.OrderRepository;
@@ -19,6 +20,7 @@ import java.util.Objects;
 public class OrderService {
 
     private final OrderRepository orderRepository;
+    private final OrderPaidEventProducer orderPaidEventProducer;
 
     @Transactional(readOnly = true)
     public List<Order> findAll() {
@@ -29,6 +31,11 @@ public class OrderService {
     public Order findByIdOrThrow(Long id) {
         return orderRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException("Order with id: %s not found".formatted(id)));
+    }
+
+    @Transactional(readOnly = true)
+    public Order findById(Long id) {
+        return orderRepository.findById(id).orElse(null);
     }
 
     public Order save(Order entity) {
@@ -63,5 +70,17 @@ public class OrderService {
         entity.setPaymentId(paymentId);
         entity.setStatus(OrderStatus.PAYMENT_PROCESSING);
         orderRepository.save(entity);
+    }
+
+    public void markAsPaid(Order entity) {
+        entity.setStatus(OrderStatus.PAYMENT_COMPLETED);
+        update(entity);
+        orderPaidEventProducer.send(entity);
+    }
+
+    public void markAsShipping(Order entity, Long deliveryId) {
+        entity.setStatus(OrderStatus.SHIPPING);
+        entity.setDeliveryId(deliveryId);
+        update(entity);
     }
 }
