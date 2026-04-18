@@ -9,6 +9,7 @@ import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Component;
 
 import java.util.Objects;
+import java.util.UUID;
 
 @Component
 @RequiredArgsConstructor
@@ -21,7 +22,7 @@ public class DeliveryCreateEventProducer {
     public void send(Delivery delivery) {
         Objects.requireNonNull(delivery, "delivery must not be null");
         DeliveryCreateEvent event = deliveryCreateEventMapper.toEvent(delivery);
-        kafkaTemplate.send(kafkaTopicProperties.getDeliveryServiceCreatedEventTopic(), String.valueOf(event.id()), event);
+        kafkaTemplate.send(kafkaTopicProperties.getDeliveryServiceCreatedEventTopic(), UUID.randomUUID().toString(), event);
     }
 
 }
