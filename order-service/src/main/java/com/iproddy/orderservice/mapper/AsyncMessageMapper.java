@@ -1,11 +1,11 @@
 package com.iproddy.orderservice.mapper;
 
-import com.iproddy.common.model.enums.OutboxMessageStatus;
-import com.iproddy.common.model.enums.OutboxType;
+import com.iproddy.orderservice.model.enums.AsyncMessageStatus;
+import com.iproddy.orderservice.model.enums.AsyncMessageType;
 import com.iproddy.common.util.JsonUtil;
 import com.iproddy.orderservice.config.properties.KafkaTopicProperties;
 import com.iproddy.orderservice.kafla.producer.dto.OrderPaidEvent;
-import com.iproddy.orderservice.model.entity.TransactionOutbox;
+import com.iproddy.orderservice.model.entity.AsyncMessage;
 import com.iproddy.orderservice.model.enums.EventType;
 import com.iproddy.orderservice.model.vo.Payload;
 import lombok.RequiredArgsConstructor;
@@ -15,18 +15,18 @@ import java.util.UUID;
 
 @Component
 @RequiredArgsConstructor
-public class TransactionOutboxMapper {
+public class AsyncMessageMapper {
 
     private final KafkaTopicProperties kafkaTopicProperties;
 
-    public TransactionOutbox toEntity(OrderPaidEvent event) {
-        TransactionOutbox transactionOutbox = new TransactionOutbox();
-        transactionOutbox.setId(UUID.randomUUID());
-        transactionOutbox.setTopic(kafkaTopicProperties.getOrderServicePaidEventTopic());
-        transactionOutbox.setType(OutboxType.OUTBOX);
-        transactionOutbox.setStatus(OutboxMessageStatus.CREATED);
-        transactionOutbox.setPayload(toPayload(event));
-        return transactionOutbox;
+    public AsyncMessage toEntity(OrderPaidEvent event) {
+        AsyncMessage asyncMessage = new AsyncMessage();
+        asyncMessage.setId(UUID.randomUUID());
+        asyncMessage.setTopic(kafkaTopicProperties.getOrderServicePaidEventTopic());
+        asyncMessage.setType(AsyncMessageType.OUTBOX);
+        asyncMessage.setStatus(AsyncMessageStatus.CREATED);
+        asyncMessage.setPayload(toPayload(event));
+        return asyncMessage;
     }
 
     private Payload toPayload(OrderPaidEvent event) {

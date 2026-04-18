@@ -1,7 +1,7 @@
 package com.iproddy.orderservice.model.entity;
 
-import com.iproddy.common.model.enums.OutboxMessageStatus;
-import com.iproddy.common.model.enums.OutboxType;
+import com.iproddy.orderservice.model.enums.AsyncMessageStatus;
+import com.iproddy.orderservice.model.enums.AsyncMessageType;
 import com.iproddy.orderservice.model.vo.Payload;
 import jakarta.persistence.Column;
 import jakarta.persistence.Embedded;
@@ -19,10 +19,10 @@ import java.util.UUID;
 
 @Data
 @Entity
-@IdClass(TransactionOutboxMessageId.class)
+@IdClass(AsyncMessageId.class)
 @EqualsAndHashCode(of = {"id", "topic"}, callSuper = false)
-@Table(name = "transaction_outbox")
-public class TransactionOutbox extends PersistableEntity<TransactionOutboxMessageId> {
+@Table(name = "async_messages")
+public class AsyncMessage extends PersistableEntity<AsyncMessageId> {
 
     @Id
     @Column(name = "id", nullable = false)
@@ -40,16 +40,16 @@ public class TransactionOutbox extends PersistableEntity<TransactionOutboxMessag
 
     @Enumerated(EnumType.STRING)
     @Column(name = "type", nullable = false)
-    private OutboxType type;
+    private AsyncMessageType type;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "status", nullable = false)
-    private OutboxMessageStatus status;
+    private AsyncMessageStatus status;
 
     @Override
     @Transient
-    public TransactionOutboxMessageId getId() {
-        return new TransactionOutboxMessageId(id, topic);
+    public AsyncMessageId getId() {
+        return new AsyncMessageId(id, topic);
     }
 
 

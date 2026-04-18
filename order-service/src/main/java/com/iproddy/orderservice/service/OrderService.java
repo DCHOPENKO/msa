@@ -3,7 +3,7 @@ package com.iproddy.orderservice.service;
 import com.iproddy.common.exception.NotFoundException;
 import com.iproddy.orderservice.kafla.producer.dto.OrderPaidEvent;
 import com.iproddy.orderservice.mapper.OrderPaidEventMapper;
-import com.iproddy.orderservice.mapper.TransactionOutboxMapper;
+import com.iproddy.orderservice.mapper.AsyncMessageMapper;
 import com.iproddy.orderservice.model.entity.Order;
 import com.iproddy.orderservice.model.enums.OrderStatus;
 import com.iproddy.orderservice.repository.OrderRepository;
@@ -22,8 +22,8 @@ import java.util.Objects;
 public class OrderService {
 
     private final OrderRepository orderRepository;
-    private final TransactionOutboxService transactionOutboxService;
-    private final TransactionOutboxMapper transactionOutboxMapper;
+    private final AsyncMessageService asyncMessageService;
+    private final AsyncMessageMapper asyncMessageMapper;
     private final OrderPaidEventMapper orderPaidEventMapper;
 
     @Transactional(readOnly = true)
@@ -80,7 +80,7 @@ public class OrderService {
         entity.setStatus(OrderStatus.PAYMENT_COMPLETED);
         update(entity);
         OrderPaidEvent event = orderPaidEventMapper.toEvent(entity);
-        transactionOutboxService.saveMessage(transactionOutboxMapper.toEntity(event));
+        asyncMessageService.save(asyncMessageMapper.toEntity(event));
     }
 
     public void markAsShipping(Order entity, Long deliveryId) {

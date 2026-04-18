@@ -10,7 +10,7 @@ import java.util.UUID;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class TransactionOutboxMessageId implements Serializable {
+public class AsyncMessageId implements Serializable {
 
     private UUID id;
 
