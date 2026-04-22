@@ -106,3 +106,8 @@ kafka:
   topic:
     order-service-paid-event-topic: q.order_service.paid
     delivery-service-created-event-topic: q.delivery_service.created
+
+
+job:
+  transaction-outbox:
+    queue-poll-delay-millis: 3000
