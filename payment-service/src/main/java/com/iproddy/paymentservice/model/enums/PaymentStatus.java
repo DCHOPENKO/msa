@@ -6,6 +6,6 @@ import io.swagger.v3.oas.annotations.media.Schema;
 public enum PaymentStatus {
     CREATED,
     PAID,
-    DECLINED,
+    REFUNDED,
     CANCELLED
 }

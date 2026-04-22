@@ -16,11 +16,26 @@ spring:
       ddl-auto: update
     show-sql: true
 
-  rabbitmq:
-    host: '${RABBIT_HOST:localhost}'
-    port: '${RABBIT_PORT:5672}'
-    username: '${RABBIT_USERNAME:guest}'
-    password: '${RABBIT_PASSWORD:guest}'
+  kafka:
+    bootstrap-servers: localhost:9093
+    producer:
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
+      properties:
+        spring.json.type.mapping: message:com.iproddy.common.dto.kafka.OrderCreationStatusMessage
+    listener:
+      ack-mode: record
+    consumer:
+      group-id: payment-service
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
+      auto-offset-reset: earliest
+      enable-auto-commit: true
+      properties:
+        spring.json.use.type.headers: true
+        spring.json.trusted.packages: com.iproddy.common.dto.kafka
+        spring.json.type.mapping: message:com.iproddy.common.dto.kafka.OrderCreationStatusMessage
+
 
 resilience4j:
   circuitbreaker:
@@ -41,9 +56,8 @@ rate-limiter:
     per-minute: 100
     per-hour: 1000
 
-rabbitmq:
-  queue:
-    payment-create-request_queue: 'q.order_service.payment_create_events'
-    payment-response_queue: 'q.payment_service.payment_events'
+kafka:
+  topic:
+    order-creation-status-topic: order.creation.status
 
 

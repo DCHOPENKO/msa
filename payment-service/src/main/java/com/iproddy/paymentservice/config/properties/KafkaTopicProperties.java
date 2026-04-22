@@ -1,4 +1,4 @@
-package com.iproddy.deliveryservice.config.properties;
+package com.iproddy.paymentservice.config.properties;
 
 import lombok.Data;
 import org.springframework.boot.context.properties.ConfigurationProperties;

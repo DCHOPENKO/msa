@@ -1,7 +1,7 @@
 package com.iproddy.deliveryservice.mapper;
 
+import com.iproddy.common.dto.kafka.OrderCreationStatusMessage;
 import com.iproddy.deliveryservice.controller.dto.DeliveryDto;
-import com.iproddy.deliveryservice.kafka.consumer.dto.OrderPaidEvent;
 import com.iproddy.deliveryservice.model.entity.Delivery;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
@@ -13,7 +13,6 @@ import java.util.List;
         uses = {
                 CustomerInfoMapper.class,
                 ShippingAddressMapper.class,
-                OrderPaidEventMapper.class
         })
 public interface DeliveryMapper {
 
@@ -28,12 +27,11 @@ public interface DeliveryMapper {
             @Mapping(target = "id", ignore = true),
             @Mapping(target = "createdAt", ignore = true),
             @Mapping(target = "updatedAt", ignore = true),
-            @Mapping(target = "orderId", source = "id"),
             @Mapping(target = "shippingAddress", source = "shippingAddress"),
             @Mapping(target = "customerInfo", source = "customerInfo"),
             @Mapping(target = "status", constant = "CREATED")
     })
-    Delivery toEntity(OrderPaidEvent event);
+    Delivery toEntity(OrderCreationStatusMessage message);
 
     DeliveryDto.Response.Base toResponse(Delivery entity);
 

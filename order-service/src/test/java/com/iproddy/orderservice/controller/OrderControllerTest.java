@@ -2,92 +2,23 @@ package com.iproddy.orderservice.controller;
 
 import com.iproddy.orderservice.IntegrationTestBase;
 import com.iproddy.orderservice.controller.dto.OrderItemDto;
-import com.iproddy.orderservice.http.client.payment.PaymentFeignClient;
-import com.iproddy.orderservice.http.client.payment.dto.PaymentDto;
-import com.iproddy.orderservice.model.enums.PaymentStatus;
 import com.iproddy.orderservice.model.entity.Order;
 import com.iproddy.orderservice.model.enums.OrderStatus;
 import com.iproddy.orderservice.util.TestDataFactory;
 import org.junit.jupiter.api.Test;
-import org.springframework.test.context.bean.override.mockito.MockReset;
-import org.springframework.test.context.bean.override.mockito.MockitoBean;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 public class OrderControllerTest extends IntegrationTestBase {
-
-    @MockitoBean(reset = MockReset.BEFORE)
-    private PaymentFeignClient paymentFeignClient;
-
-    @Test
-    @Transactional
-    void createOrder_shouldPersistOrderAndReturnResponse() throws Exception {
-        var request = TestDataFactory.createOrderUpdateRequest();
-        BigDecimal totalAmount = calculateTotalAmount(request.items());
-
-
-        mockMvc.perform(post("/api/v1/orders/sync-integration")
-                        .contentType(APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(request)))
-                .andExpect(status().isCreated())
-                .andExpect(jsonPath("$.id").isNumber())
-                .andExpect(jsonPath("$.status").value(OrderStatus.CREATED.name()))
-                .andExpect(jsonPath("$.customerInfo.customerName").value(request.customerInfo().customerName()))
-                .andExpect(jsonPath("$.shippingAddress.city").value(request.shippingAddress().city()))
-                .andExpect(jsonPath("$.items.length()").value(3))
-                .andExpect(jsonPath("$.totalAmount").value(totalAmount));
-
-        verify(paymentFeignClient, times(0)).createPayment(any(), any());
-
-        List<Order> allOrders = orderRepository.findAll();
-        assertThat(allOrders).hasSize(1);
-        assertThat(allOrders.getFirst().getItems()).hasSize(3);
-    }
-
-    @Test
-    @Transactional
-    void createOrderWithPayment_shouldPersistOrderAndReturnResponse() throws Exception {
-        long paymentId = 1L;
-        var request = TestDataFactory.createOrderCreateRequest();
-        BigDecimal totalAmount = calculateTotalAmount(request.items());
-
-        when(paymentFeignClient.createPayment(any(), any()))
-                .thenReturn(new PaymentDto.Response.Base(paymentId, 1L, totalAmount, request.paymentMethod(), PaymentStatus.CREATED, null));
-
-
-        mockMvc.perform(post("/api/v1/orders/sync-integration")
-                        .contentType(APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(request)))
-                .andExpect(status().isCreated())
-                .andExpect(jsonPath("$.id").isNumber())
-                .andExpect(jsonPath("$.status").value(OrderStatus.PAYMENT_PROCESSING.name()))
-                .andExpect(jsonPath("$.customerInfo.customerName").value(request.customerInfo().customerName()))
-                .andExpect(jsonPath("$.shippingAddress.city").value(request.shippingAddress().city()))
-                .andExpect(jsonPath("$.items.length()").value(3))
-                .andExpect(jsonPath("$.totalAmount").value(totalAmount))
-                .andExpect(jsonPath("$.paymentId").value(paymentId));
-
-        verify(paymentFeignClient, times(1)).createPayment(any(), any());
-
-        List<Order> allOrders = orderRepository.findAll();
-        assertThat(allOrders).hasSize(1);
-        assertThat(allOrders.getFirst().getItems()).hasSize(3);
-    }
 
     @Test
     public void updateOrder_shouldUpdateOrderAndReturnResponse() throws Exception {

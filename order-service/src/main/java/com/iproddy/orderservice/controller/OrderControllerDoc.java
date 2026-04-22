@@ -80,47 +80,6 @@ public interface OrderControllerDoc {
             @Parameter(description = "Unique order identifier", example = "1", required = true) Long id);
 
     @Operation(
-            summary = "Create order",
-            description = "Creates a new order. If paymentMethod is provided, the service also sends a request to payment-service " +
-                    "to create a payment for the created order and stores the returned payment identifier."
-    )
-    @ApiResponses(value = {
-            @ApiResponse(
-                    responseCode = "201",
-                    description = "Order successfully created",
-                    content = @Content(
-                            mediaType = "application/json",
-                            schema = @Schema(implementation = OrderDto.Response.Base.class)
-                    )
-            ),
-            @ApiResponse(
-                    responseCode = "400",
-                    description = "Invalid request body",
-                    content = @Content(
-                            mediaType = "application/json",
-                            schema = @Schema(implementation = ErrorResponse.class)
-                    )
-            ),
-            @ApiResponse(
-                    responseCode = "500",
-                    description = "Internal server error",
-                    content = @Content(
-                            mediaType = "application/json",
-                            schema = @Schema(implementation = ErrorResponse.class)
-                    )
-
-            )
-    })
-    OrderDto.Response.Base createWithSyncIntegration(
-            @RequestBody(
-                    description = "Order creation request payload", required = true,
-                    content = @Content(
-                            mediaType = "application/json",
-                            schema = @Schema(implementation = OrderDto.Request.Create.class)
-                    )
-            ) OrderDto.Request.Create request);
-
-    @Operation(
             summary = "Update order",
             description = "Updates an existing order by its identifier."
     )

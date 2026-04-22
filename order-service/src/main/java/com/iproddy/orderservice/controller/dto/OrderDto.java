@@ -1,6 +1,6 @@
 package com.iproddy.orderservice.controller.dto;
 
-import com.iproddy.orderservice.model.enums.PaymentMethod;
+import com.iproddy.common.dto.kafka.PaymentMethod;
 import com.iproddy.orderservice.model.enums.OrderStatus;
 import io.swagger.v3.oas.annotations.media.Schema;
 
