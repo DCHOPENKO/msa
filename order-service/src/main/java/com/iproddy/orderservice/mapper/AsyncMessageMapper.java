@@ -4,7 +4,6 @@ import com.iproddy.orderservice.model.enums.AsyncMessageStatus;
 import com.iproddy.orderservice.model.enums.AsyncMessageType;
 import com.iproddy.common.util.JsonUtil;
 import com.iproddy.orderservice.config.properties.KafkaTopicProperties;
-import com.iproddy.orderservice.kafla.producer.dto.OrderPaidEvent;
 import com.iproddy.orderservice.model.entity.AsyncMessage;
 import com.iproddy.orderservice.model.enums.EventType;
 import com.iproddy.orderservice.model.vo.Payload;
@@ -19,20 +18,30 @@ public class AsyncMessageMapper {
 
     private final KafkaTopicProperties kafkaTopicProperties;
 
-    public AsyncMessage toEntity(OrderPaidEvent event) {
+    public <T> AsyncMessage toEntity(T message) {
         AsyncMessage asyncMessage = new AsyncMessage();
         asyncMessage.setId(UUID.randomUUID());
         asyncMessage.setTopic(kafkaTopicProperties.getOrderServicePaidEventTopic());
         asyncMessage.setType(AsyncMessageType.OUTBOX);
         asyncMessage.setStatus(AsyncMessageStatus.CREATED);
-        asyncMessage.setPayload(toPayload(event));
+        asyncMessage.setPayload(toPayload(message));
         return asyncMessage;
     }
 
-    private Payload toPayload(OrderPaidEvent event) {
+    public <T> AsyncMessage toEntity(UUID id, String topic, T message) {
+        AsyncMessage asyncMessage = new AsyncMessage();
+        asyncMessage.setId(id);
+        asyncMessage.setTopic(topic);
+        asyncMessage.setType(AsyncMessageType.INBOX);
+        asyncMessage.setStatus(AsyncMessageStatus.RECEIVED);
+        asyncMessage.setPayload(toPayload(message));
+        return asyncMessage;
+    }
+
+    private <T> Payload toPayload(T message) {
         Payload payload = new Payload();
-        payload.setEventType(EventType.ORDER_PAID);
-        payload.setBody(JsonUtil.stringify(event));
+        payload.setEventType(EventType.valueOf(message.getClass()));
+        payload.setBody(JsonUtil.stringify(message));
         return payload;
     }
 }
