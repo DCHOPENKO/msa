@@ -21,11 +21,8 @@ public class OrderCreationStatusMessageConsumer {
     public void consume(OrderCreationStatusMessage message) {
 
         OrderStatus status = switch (message.status()) {
-            case PAYMENT_PROCESSING -> OrderStatus.PAYMENT_PROCESSING;
-            case PAYMENT_COMPLETED -> OrderStatus.PAYMENT_COMPLETED;
-            case DELIVERY_PROCESSING -> OrderStatus.SHIPPING;
-            case DELIVERY_COMPLETED -> OrderStatus.COMPLETED;
-            case PAYMENT_FAILED, PAYMENT_REFUNDED, DELIVERY_CANCELLED -> OrderStatus.CANCELLED;
+            case COMPLETED -> OrderStatus.COMPLETED;
+            case CANCELLED -> OrderStatus.CANCELLED;
             default -> null;
         };
 

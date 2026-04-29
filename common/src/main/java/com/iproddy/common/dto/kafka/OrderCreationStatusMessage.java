@@ -13,32 +13,9 @@ public record OrderCreationStatusMessage(
         String deliveryId,
         PaymentMethod paymentMethod,
         BigDecimal totalAmount,
-        CardInfo cardInfo,
-        ShippingAddress shippingAddress,
-        CustomerInfo customerInfo
+        CardInfoEventDto cardInfo,
+        ShippingAddressEventDto shippingAddress,
+        CustomerInfoEventDto customerInfo
 
 ) {
-
-    public record ShippingAddress(
-            String city,
-            String street,
-            String house,
-            String apartment
-    ) {
-    }
-
-    public record CustomerInfo(
-            String customerName,
-            String email,
-            String phoneNumber
-    ) {
-    }
-
-    public record CardInfo(
-            String cardHolder,
-            String cardNumber,
-            Integer expirationMonth,
-            Integer expirationYear
-    ) {
-    }
 }

@@ -1,5 +1,8 @@
 package com.iproddy.orderservice.mapper;
 
+import com.iproddy.common.dto.kafka.CardInfoEventDto;
+import com.iproddy.common.dto.kafka.CustomerInfoEventDto;
+import com.iproddy.common.dto.kafka.ShippingAddressEventDto;
 import com.iproddy.common.model.vo.CustomerInfo;
 import com.iproddy.common.model.vo.ShippingAddress;
 import com.iproddy.orderservice.controller.dto.OrderDto;
@@ -22,9 +25,9 @@ public interface OrderCreationStatusMessageMapper {
     })
     OrderCreationStatusMessage toEvent(Order order, OrderDto.Request.Create request);
 
-    OrderCreationStatusMessage.ShippingAddress toEvent(ShippingAddress shippingAddress);
+    ShippingAddressEventDto toEvent(ShippingAddress shippingAddress);
 
-    OrderCreationStatusMessage.CustomerInfo toEvent(CustomerInfo customerInfo);
+    CustomerInfoEventDto toEvent(CustomerInfo customerInfo);
 
-    OrderCreationStatusMessage.CardInfo toEvent(OrderDto.Request.Create.CardInfo cardInfo);
+    CardInfoEventDto toEvent(OrderDto.Request.Create.CardInfo cardInfo);
 }

@@ -28,6 +28,12 @@ public class PaymentService {
                 .orElseThrow(() -> new NotFoundException("Payment with id: %s not found".formatted(id)));
     }
 
+    @Transactional(readOnly = true)
+    public Payment findByOrderId(Long id) {
+        return paymentRepository.findByOrderId(id)
+                .orElseThrow(() -> new NotFoundException("Payment with order id: %s not found".formatted(id)));
+    }
+
     public Payment save(Payment entity) {
         entity.setId(null);
         entity.setStatus(PaymentStatus.CREATED);

@@ -6,7 +6,7 @@ public enum ShippingAddressDto {
     ;
     public enum  Request{
         ;
-        @Schema(name = "ShippingAddressBaseRequest", description = "ShippingAddress base information in delivery request")
+        @Schema(name = "ShippingAddressBaseRequest", description = "ShippingAddressEventDto base information in delivery request")
         public record Base(
                 @Schema(description = "City", example = "Moscow")
                 String city,
@@ -20,7 +20,7 @@ public enum ShippingAddressDto {
     }
     public enum Response{
         ;
-        @Schema(name = "ShippingAddressBaseResponse", description = "ShippingAddress base information in delivery response")
+        @Schema(name = "ShippingAddressBaseResponse", description = "ShippingAddressEventDto base information in delivery response")
         public record Base(
                 @Schema(description = "City", example = "Moscow")
                 String city,
