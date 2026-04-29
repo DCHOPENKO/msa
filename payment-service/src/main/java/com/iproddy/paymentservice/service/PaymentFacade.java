@@ -5,6 +5,7 @@ import com.iproddy.common.dto.kafka.OrderCreationStatusMessage;
 import com.iproddy.common.dto.kafka.PaymentCreationMessage;
 import com.iproddy.common.dto.kafka.PaymentRefundingMessage;
 import com.iproddy.paymentservice.kafka.producer.OrderCreationStatusMessageProducer;
+import com.iproddy.paymentservice.mapper.OrderCreationStatusMessageMapper;
 import com.iproddy.paymentservice.mapper.PaymentMapper;
 import com.iproddy.paymentservice.model.entity.Payment;
 import com.iproddy.paymentservice.model.enums.PaymentStatus;
@@ -21,6 +22,7 @@ public class PaymentFacade {
 
     private final PaymentService paymentService;
     private final PaymentMapper paymentMapper;
+    private final OrderCreationStatusMessageMapper orderCreationStatusMessageMapper;
     private final OrderCreationStatusMessageProducer orderCreationStatusMessageProducer;
     private final Random random = new Random();
 
@@ -38,7 +40,7 @@ public class PaymentFacade {
         OrderCreationStatus orderCreationStatus = isTrue ? OrderCreationStatus.PAYMENT_COMPLETED : OrderCreationStatus.PAYMENT_FAILED;
 
         paymentService.setStatus(saved, paymentStatus);
-        sendOrderCreationStatusMessage(message.orderId(), orderCreationStatus);
+        sendOrderCreationStatusMessage(saved, orderCreationStatus);
         log.info("Payment with id {} for order (id: {}) was {}.",saved.getId(), message.orderId(), isTrue ? "passed" : "failed");
     }
 
@@ -50,15 +52,12 @@ public class PaymentFacade {
         Thread.sleep(4000);
 
         paymentService.setStatus(entity, PaymentStatus.REFUNDED);
-        sendOrderCreationStatusMessage(message.orderId(), OrderCreationStatus.PAYMENT_REFUNDED);
+        sendOrderCreationStatusMessage(entity, OrderCreationStatus.PAYMENT_REFUNDED);
         log.info("Payment with id {} for order (id: {}) was refunded.",entity.getId(), message.orderId());
     }
 
-    private void sendOrderCreationStatusMessage(long orderId, OrderCreationStatus status) {
-        OrderCreationStatusMessage message = OrderCreationStatusMessage.builder()
-                .orderId(orderId)
-                .status(status)
-                .build();
+    private void sendOrderCreationStatusMessage(Payment payment, OrderCreationStatus status) {
+        OrderCreationStatusMessage message = orderCreationStatusMessageMapper.toEvent(payment, status);
         orderCreationStatusMessageProducer.send(message);
     }
 
