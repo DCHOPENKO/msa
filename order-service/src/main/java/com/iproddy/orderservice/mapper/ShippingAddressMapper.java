@@ -1,5 +1,6 @@
 package com.iproddy.orderservice.mapper;
 
+import com.iproddy.common.dto.kafka.ShippingAddressEventDto;
 import com.iproddy.orderservice.controller.dto.ShippingAddressDto;
 import com.iproddy.common.model.vo.ShippingAddress;
 import org.mapstruct.Mapper;
@@ -10,4 +11,6 @@ public interface ShippingAddressMapper {
     ShippingAddress toEntity(ShippingAddressDto.Request.Base request);
 
     ShippingAddressDto.Response.Base toResponse(ShippingAddress entity);
+
+    ShippingAddressEventDto toEvent(ShippingAddress entity);
 }

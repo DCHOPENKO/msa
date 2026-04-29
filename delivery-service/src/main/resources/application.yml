@@ -52,3 +52,4 @@ resilience4j:
 kafka:
   topic:
     order-creation-status-topic: order.creation.status
+    delivery-create-event-topic: delivery.create_event
