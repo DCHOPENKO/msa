@@ -2,14 +2,11 @@ package com.iproddy.orderservice.controller;
 
 import com.iproddy.common.util.JsonUtil;
 import com.iproddy.orderservice.controller.dto.OrderDto;
-import com.iproddy.orderservice.http.client.payment.PaymentClient;
-import com.iproddy.orderservice.http.client.payment.dto.PaymentDto;
+import com.iproddy.orderservice.kafla.producer.OrderCreationStatusMessageProducer;
+import com.iproddy.common.dto.kafka.OrderCreationStatusMessage;
+import com.iproddy.orderservice.mapper.OrderCreationStatusMessageMapper;
 import com.iproddy.orderservice.mapper.OrderMapper;
-import com.iproddy.orderservice.mapper.PaymentCreateRequestEventMapper;
-import com.iproddy.orderservice.mapper.PaymentDtoMapper;
 import com.iproddy.orderservice.model.entity.Order;
-import com.iproddy.orderservice.rabbitmq.producer.PaymentCreateEventProducer;
-import com.iproddy.orderservice.rabbitmq.producer.dto.PaymentCreateRequestEvent;
 import com.iproddy.orderservice.service.OrderService;
 import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
 import lombok.RequiredArgsConstructor;
@@ -36,10 +33,9 @@ public class OrderController implements OrderControllerDoc {
 
     private final OrderService orderService;
     private final OrderMapper orderMapper;
-    private final PaymentClient paymentClient;
-    private final PaymentCreateEventProducer paymentCreateEventProducer;
-    private final PaymentDtoMapper paymentDtoMapper;
-    private final PaymentCreateRequestEventMapper paymentCreateRequestEventMapper;
+    private final OrderCreationStatusMessageProducer orderCreationStatusMessageProducer;
+    private final OrderCreationStatusMessageMapper orderCreationStatusMessageMapper;
+
 
     @Override
     @GetMapping
@@ -55,36 +51,17 @@ public class OrderController implements OrderControllerDoc {
         return orderMapper.toResponse(order);
     }
 
-    @Override
-    @PostMapping("/sync-integration")
-    @ResponseStatus(HttpStatus.CREATED)
-    public OrderDto.Response.Base createWithSyncIntegration(@RequestBody OrderDto.Request.Create request) {
-        log.info("Starting create new order (sync integration) with payload: {}", JsonUtil.stringify(request));
-        Order order = orderMapper.toEntity(request);
-        Order saved = orderService.save(order);
-        PaymentDto.Response.Base paymentResponse = null;
-        if (request.paymentMethod() != null) {
-            log.info("Executing payment creation process for order with id: {}", saved.getId());
-            PaymentDto.Request.Base paymentRequest = paymentDtoMapper.toRequest(saved, request);
-            paymentResponse = paymentClient.createPayment(paymentRequest);
-            orderService.setPaymentId(saved, paymentResponse.id());
-            log.info("Payment creation process finished for order with id: {}, paymentId: {}", saved.getId(), paymentResponse.id());
-        }
-        log.info("Order created (sync integration) with id {}", saved.getId());
-        return orderMapper.toResponse(saved);
-    }
-
-    @PostMapping("/async-integration")
+    @PostMapping()
     @ResponseStatus(HttpStatus.CREATED)
     public OrderDto.Response.Base createWithASyncIntegration(@RequestBody OrderDto.Request.Create request) {
-        log.info("Starting create new order (async rabbit integration) with payload: {}", JsonUtil.stringify(request));
+        log.info("Starting create new order with payload: {}", JsonUtil.stringify(request));
         Order order = orderMapper.toEntity(request);
         Order saved = orderService.save(order);
         if (request.paymentMethod() != null) {
-            PaymentCreateRequestEvent paymentEvent = paymentCreateRequestEventMapper.toEvent(saved, request);
-            paymentCreateEventProducer.send(paymentEvent);
+            OrderCreationStatusMessage message = orderCreationStatusMessageMapper.toEvent(saved, request);
+            orderCreationStatusMessageProducer.send(message);
         }
-        log.info("Order created (async rabbit integration) with id {}", saved.getId());
+        log.info("Order created with id {}", saved.getId());
         return orderMapper.toResponse(saved);
     }
 

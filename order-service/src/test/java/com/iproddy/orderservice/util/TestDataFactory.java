@@ -4,9 +4,6 @@ import com.iproddy.orderservice.controller.dto.CustomerInfoDto;
 import com.iproddy.orderservice.controller.dto.OrderDto;
 import com.iproddy.orderservice.controller.dto.OrderItemDto;
 import com.iproddy.orderservice.controller.dto.ShippingAddressDto;
-import com.iproddy.orderservice.http.client.payment.dto.PaymentDto;
-import com.iproddy.orderservice.model.enums.PaymentMethod;
-import com.iproddy.orderservice.model.enums.PaymentStatus;
 import com.iproddy.orderservice.model.entity.Order;
 import com.iproddy.orderservice.model.enums.OrderStatus;
 import uk.co.jemos.podam.api.PodamFactory;
@@ -48,38 +45,6 @@ public final class TestDataFactory {
                 address,
                 items,
                 OrderStatus.CREATED
-        );
-    }
-
-    public static OrderDto.Request.Create createOrderCreateRequest() {
-        CustomerInfoDto.Request.Base customer =
-                podam.manufacturePojo(CustomerInfoDto.Request.Base.class);
-
-        ShippingAddressDto.Request.Base address =
-                podam.manufacturePojo(ShippingAddressDto.Request.Base.class);
-
-        List<OrderItemDto.Request.Base> items = createItems(3);
-
-        OrderDto.Request.Create.CardInfo cardInfo =
-                podam.manufacturePojo(OrderDto.Request.Create.CardInfo.class);
-
-        return new OrderDto.Request.Create(
-                customer,
-                address,
-                items,
-                cardInfo,
-                PaymentMethod.CARD,
-                OrderStatus.CREATED
-        );
-    }
-
-    public static PaymentDto.Request.Base createPaymentRequest(Long orderId) {
-        return new PaymentDto.Request.Base(
-                orderId,
-                BigDecimal.valueOf(42),
-                PaymentMethod.CASH,
-                PaymentStatus.CREATED,
-                null
         );
     }
 

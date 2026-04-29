@@ -22,7 +22,7 @@ spring:
       key-serializer: org.apache.kafka.common.serialization.StringSerializer
       value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
       properties:
-        spring.json.type.mapping: deliveryCreateEvent:com.iproddy.deliveryservice.kafka.producer.dto.DeliveryCreateEvent
+        spring.json.type.mapping: message:com.iproddy.common.dto.kafka.OrderCreationStatusMessage
     listener:
       ack-mode: record
     consumer:
@@ -32,9 +32,9 @@ spring:
       auto-offset-reset: earliest
       enable-auto-commit: true
       properties:
-        spring.json.trusted.packages: com.iproddy.orderservice.kafla.producer.dto,com.iproddy.deliveryservice.kafka.consumer.dto
         spring.json.use.type.headers: true
-        spring.json.type.mapping: orderPaidEvent:com.iproddy.deliveryservice.kafka.consumer.dto.OrderPaidEvent,com.iproddy.orderservice.kafla.producer.dto.OrderPaidEvent:com.iproddy.deliveryservice.kafka.consumer.dto.OrderPaidEvent
+        spring.json.trusted.packages: com.iproddy.common.dto.kafka
+        spring.json.type.mapping: message:com.iproddy.common.dto.kafka.OrderCreationStatusMessage
 
 resilience4j:
   circuitbreaker:
@@ -51,5 +51,4 @@ resilience4j:
 
 kafka:
   topic:
-    order-service-paid-event-topic: q.order_service.paid
-    delivery-service-created-event-topic: q.delivery_service.created
+    order-creation-status-topic: order.creation.status

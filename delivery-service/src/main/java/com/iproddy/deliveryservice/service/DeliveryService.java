@@ -1,7 +1,6 @@
 package com.iproddy.deliveryservice.service;
 
 import com.iproddy.common.exception.NotFoundException;
-import com.iproddy.deliveryservice.kafka.producer.DeliveryCreateEventProducer;
 import com.iproddy.deliveryservice.model.entity.Delivery;
 import com.iproddy.deliveryservice.model.enums.DeliveryStatus;
 import com.iproddy.deliveryservice.repository.DeliveryRepository;
@@ -17,7 +16,6 @@ import java.util.List;
 public class DeliveryService {
 
     private final DeliveryRepository deliveryRepository;
-    private final DeliveryCreateEventProducer deliveryCreateEventProducer;
 
     @Transactional(readOnly = true)
     public List<Delivery> findAll() {
@@ -33,14 +31,17 @@ public class DeliveryService {
     public Delivery save(Delivery entity) {
         entity.setId(null);
         entity.setStatus(DeliveryStatus.CREATED);
-        Delivery savedEntity = deliveryRepository.save(entity);
-        deliveryCreateEventProducer.send(savedEntity);
-        return savedEntity;
+        return deliveryRepository.save(entity);
     }
 
-        public Delivery update(Delivery entity) {
+    public Delivery update(Delivery entity) {
         findByIdOrThrow(entity.getId());
         return deliveryRepository.save(entity);
+    }
+
+    public Delivery setStatus(Delivery entity, DeliveryStatus status) {
+        entity.setStatus(status);
+        return update(entity);
     }
 
     public void delete(Long id) {

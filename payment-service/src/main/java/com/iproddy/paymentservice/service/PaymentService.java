@@ -39,9 +39,8 @@ public class PaymentService {
         return paymentRepository.save(entity);
     }
 
-    public Payment markAsPaid(Payment entity) {
-        entity.setStatus(PaymentStatus.PAID);
-        findByIdOrThrow(entity.getId());
+    public Payment setStatus(Payment entity, PaymentStatus status) {
+        entity.setStatus(status);
         return update(entity);
     }
 

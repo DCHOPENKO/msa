@@ -16,19 +16,13 @@ spring:
       ddl-auto: update
     show-sql: true
 
-  rabbitmq:
-    host: '${RABBIT_HOST:localhost}'
-    port: '${RABBIT_PORT:5672}'
-    username: '${RABBIT_USERNAME:guest}'
-    password: '${RABBIT_PASSWORD:guest}'
-
   kafka:
     bootstrap-servers: localhost:9093
     producer:
       key-serializer: org.apache.kafka.common.serialization.StringSerializer
       value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
       properties:
-        spring.json.type.mapping: orderPaidEvent:com.iproddy.orderservice.kafla.producer.dto.OrderPaidEvent
+        spring.json.type.mapping: message:com.iproddy.common.dto.kafka.OrderCreationStatusMessage
     listener:
       ack-mode: record
     consumer:
@@ -39,27 +33,10 @@ spring:
       enable-auto-commit: true
       properties:
         spring.json.use.type.headers: true
-        spring.json.trusted.packages: com.iproddy.orderservice.kafla.consumer.dto,com.iproddy.deliveryservice.kafka.producer.dto
-        spring.json.type.mapping: deliveryCreateEvent:com.iproddy.orderservice.kafla.consumer.dto.DeliveryCreateEvent,com.iproddy.deliveryservice.kafka.producer.dto.DeliveryCreateEvent:com.iproddy.orderservice.kafla.consumer.dto.DeliveryCreateEvent
-
-  cloud:
-    openfeign:
-      client:
-        config:
-          payment-client:
-            url: http://localhost:8082
-            logger-level: full
+        spring.json.trusted.packages: com.iproddy.common.dto.kafka
+        spring.json.type.mapping: message:com.iproddy.common.dto.kafka.OrderCreationStatusMessage
 
 resilience4j:
-  retry:
-    instances:
-      paymentClientRetry:
-        maxAttempts: 3
-        waitDuration: 1000ms
-        retryExceptions:
-          - feign.FeignException
-        ignoreExceptions:
-          - java.lang.RuntimeException
 
   circuitbreaker:
     instances:
@@ -72,42 +49,7 @@ resilience4j:
         minimumNumberOfCalls: 20
         ignoreExceptions:
           - com.iproddy.common.exception.NotFoundException
-      paymentClientCircuitBreaker:
-        registerHealthIndicator: true
-        slidingWindowSize: 50
-        failureRateThreshold: 50
-        waitDurationInOpenState: 10s
-        permittedNumberOfCallsInHalfOpenState: 5
-        minimumNumberOfCalls: 10
-        recordExceptions:
-          - feign.FeignException
-        ignoreExceptions:
-          - java.lang.RuntimeException
-
-  bulkhead:
-    instances:
-      paymentClientBulkhead:
-        maxConcurrentCalls: 5
-        maxWaitDuration: 0s
-
-  ratelimiter:
-    instances:
-      paymentClientRateLimiter:
-        limitForPeriod: 10
-        limitRefreshPeriod: 1s
-        timeoutDuration: 0s
-
-rabbitmq:
-  queue:
-      payment-create-request_queue: 'q.order_service.payment_create_events'
-      payment-response_queue: 'q.payment_service.payment_events'
 
 kafka:
   topic:
-    order-service-paid-event-topic: q.order_service.paid
-    delivery-service-created-event-topic: q.delivery_service.created
-
-
-job:
-  transaction-outbox:
-    queue-poll-delay-millis: 3000
+    order-creation-status-topic: order.creation.status
