@@ -1,0 +1,29 @@
+server:
+  port: 8085
+
+spring:
+  application:
+    name:order-history-service
+
+  mongodb:
+    uri: mongodb://localhost:27017/
+    database: order-history-service-db
+
+  kafka:
+    bootstrap-servers: localhost:9093
+    consumer:
+      group-id: payment-service
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
+      auto-offset-reset: earliest
+      enable-auto-commit: true
+      properties:
+        spring.json.use.type.headers: true
+        spring.json.trusted.packages: com.iproddy.common.dto.kafka
+        spring.json.type.mapping: message:com.iproddy.common.dto.kafka.OrderCreationStatusMessage
+
+kafka:
+  topic:
+    order-creation-status-topic: order.creation.status
+
+

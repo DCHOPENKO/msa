@@ -25,6 +25,8 @@ public interface PaymentMapper {
             @Mapping(target = "createdAt", ignore = true),
             @Mapping(target = "updatedAt", ignore = true),
             @Mapping(target = "status", constant = "CREATED"),
+            @Mapping(target = "method", source = "paymentMethod"),
+            @Mapping(target = "amount", source = "totalAmount"),
     })
     Payment toEntity(PaymentCreationMessage message);
 
