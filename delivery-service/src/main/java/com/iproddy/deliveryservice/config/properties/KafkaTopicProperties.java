@@ -8,4 +8,5 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 public class KafkaTopicProperties {
 
     private String orderCreationStatusTopic;
+    private String deliveryCreateEventTopic;
 }

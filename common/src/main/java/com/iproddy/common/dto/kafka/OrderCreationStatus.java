@@ -9,4 +9,6 @@ public enum OrderCreationStatus {
     DELIVERY_PROCESSING,
     DELIVERY_CANCELLED,
     DELIVERY_COMPLETED,
+    CANCELLED,
+    COMPLETED,
 }

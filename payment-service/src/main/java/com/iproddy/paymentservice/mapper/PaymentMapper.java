@@ -1,6 +1,6 @@
 package com.iproddy.paymentservice.mapper;
 
-import com.iproddy.common.dto.kafka.OrderCreationStatusMessage;
+import com.iproddy.common.dto.kafka.PaymentCreationMessage;
 import com.iproddy.paymentservice.controller.dto.PaymentDto;
 import com.iproddy.paymentservice.model.entity.Payment;
 import org.mapstruct.Mapper;
@@ -25,8 +25,10 @@ public interface PaymentMapper {
             @Mapping(target = "createdAt", ignore = true),
             @Mapping(target = "updatedAt", ignore = true),
             @Mapping(target = "status", constant = "CREATED"),
+            @Mapping(target = "method", source = "paymentMethod"),
+            @Mapping(target = "amount", source = "totalAmount"),
     })
-    Payment toEntity(OrderCreationStatusMessage message);
+    Payment toEntity(PaymentCreationMessage message);
 
     PaymentDto.Response.Base toResponse(Payment entity);
 

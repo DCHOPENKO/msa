@@ -1,5 +1,6 @@
 package com.iproddy.deliveryservice.service;
 
+import com.iproddy.common.dto.kafka.DeliveryCreationMessage;
 import com.iproddy.common.dto.kafka.OrderCreationStatus;
 import com.iproddy.common.dto.kafka.OrderCreationStatusMessage;
 import com.iproddy.deliveryservice.kafka.producer.OrderCreationStatusMessageProducer;
@@ -20,16 +21,15 @@ public class DeliveryFacade {
 
     private final DeliveryService deliveryService;
     private final DeliveryMapper deliveryMapper;
+    private final OrderCreationStatusMessageMapper orderCreationStatusMapper;
     private final OrderCreationStatusMessageProducer orderCreationStatusMessageProducer;
-    private final OrderCreationStatusMessageMapper orderCreationStatusMessageMapper;
     private final Random random = new Random();
 
-    public void proceedShipment(OrderCreationStatusMessage message) throws InterruptedException {
+    public void proceedShipment(DeliveryCreationMessage message) throws InterruptedException {
 
         log.info("Create new shipment for order with id: {}", message.orderId());
         Delivery entity = deliveryMapper.toEntity(message);
         Delivery saved = deliveryService.save(entity);
-        orderCreationStatusMessageProducer.send(orderCreationStatusMessageMapper.toMessage(message, saved.getId(), OrderCreationStatus.DELIVERY_PROCESSING));
         log.info("Shipment with id {} for order (id: {}) created. Starting Shipping process",saved.getId(), message.orderId());
 
         // имитация доставки
@@ -39,7 +39,12 @@ public class DeliveryFacade {
         OrderCreationStatus orderCreationStatus = isTrue ? OrderCreationStatus.DELIVERY_COMPLETED : OrderCreationStatus.DELIVERY_CANCELLED;
 
         deliveryService.setStatus(saved, deliveryStatus);
-        orderCreationStatusMessageProducer.send(orderCreationStatusMessageMapper.toMessage(message, saved.getId(), orderCreationStatus));
+        sendOrderCreationStatusMessage(saved, orderCreationStatus);
         log.info("Shipment with id {} for order (id: {}) was {}.",saved.getId(), message.orderId(), isTrue ? "delivered" : "cancelled");
+    }
+
+    private void sendOrderCreationStatusMessage(Delivery delivery, OrderCreationStatus status) {
+        OrderCreationStatusMessage message = orderCreationStatusMapper.toEvent(delivery, status);
+        orderCreationStatusMessageProducer.send(message);
     }
 }

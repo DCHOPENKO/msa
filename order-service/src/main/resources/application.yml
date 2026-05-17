@@ -53,3 +53,6 @@ resilience4j:
 kafka:
   topic:
     order-creation-status-topic: order.creation.status
+    payment-create-event-topic: payment.create_event
+    payment-refund-event-topic: payment.refund_event
+    delivery-create-event-topic: delivery.create_event

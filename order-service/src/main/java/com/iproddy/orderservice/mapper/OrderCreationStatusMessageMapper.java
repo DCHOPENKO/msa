@@ -1,16 +1,23 @@
 package com.iproddy.orderservice.mapper;
 
+import com.iproddy.common.dto.kafka.CardInfoEventDto;
+import com.iproddy.common.dto.kafka.CustomerInfoEventDto;
+import com.iproddy.common.dto.kafka.OrderItemEventDto;
+import com.iproddy.common.dto.kafka.ShippingAddressEventDto;
 import com.iproddy.common.model.vo.CustomerInfo;
 import com.iproddy.common.model.vo.ShippingAddress;
 import com.iproddy.orderservice.controller.dto.OrderDto;
 import com.iproddy.common.dto.kafka.OrderCreationStatusMessage;
 import com.iproddy.orderservice.model.entity.Order;
+import com.iproddy.orderservice.model.entity.OrderItem;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.Mappings;
 import org.mapstruct.ReportingPolicy;
 
-@Mapper(componentModel = "spring", unmappedTargetPolicy = ReportingPolicy.ERROR)
+import java.util.List;
+
+@Mapper(componentModel = "spring", unmappedTargetPolicy = ReportingPolicy.IGNORE)
 public interface OrderCreationStatusMessageMapper {
 
     @Mappings({
@@ -18,13 +25,18 @@ public interface OrderCreationStatusMessageMapper {
             @Mapping(target = "status", constant = "DRAFT"),
             @Mapping(target = "shippingAddress", source = "order.shippingAddress"),
             @Mapping(target = "customerInfo", source = "order.customerInfo"),
+            @Mapping(target = "orderItems", source = "order.items"),
             @Mapping(target = "cardInfo", source = "request.cardInfo")
     })
     OrderCreationStatusMessage toEvent(Order order, OrderDto.Request.Create request);
 
-    OrderCreationStatusMessage.ShippingAddress toEvent(ShippingAddress shippingAddress);
+    ShippingAddressEventDto toEvent(ShippingAddress shippingAddress);
 
-    OrderCreationStatusMessage.CustomerInfo toEvent(CustomerInfo customerInfo);
+    CustomerInfoEventDto toEvent(CustomerInfo customerInfo);
 
-    OrderCreationStatusMessage.CardInfo toEvent(OrderDto.Request.Create.CardInfo cardInfo);
+    CardInfoEventDto toEvent(OrderDto.Request.Create.CardInfo cardInfo);
+
+    OrderItemEventDto toEvent(OrderItem orderItem);
+
+    List<OrderItemEventDto> toEvents(List<OrderItem> orderItems);
 }

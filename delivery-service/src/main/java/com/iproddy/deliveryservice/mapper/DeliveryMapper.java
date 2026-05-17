@@ -1,5 +1,6 @@
 package com.iproddy.deliveryservice.mapper;
 
+import com.iproddy.common.dto.kafka.DeliveryCreationMessage;
 import com.iproddy.common.dto.kafka.OrderCreationStatusMessage;
 import com.iproddy.deliveryservice.controller.dto.DeliveryDto;
 import com.iproddy.deliveryservice.model.entity.Delivery;
@@ -31,7 +32,7 @@ public interface DeliveryMapper {
             @Mapping(target = "customerInfo", source = "customerInfo"),
             @Mapping(target = "status", constant = "CREATED")
     })
-    Delivery toEntity(OrderCreationStatusMessage message);
+    Delivery toEntity(DeliveryCreationMessage message);
 
     DeliveryDto.Response.Base toResponse(Delivery entity);
 
