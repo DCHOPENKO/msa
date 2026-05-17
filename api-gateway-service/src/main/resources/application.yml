@@ -1,6 +1,14 @@
 server:
   port: 8085
 
+eureka:
+  client:
+    service-url:
+      defaultZone: http://localhost:8761/eureka/
+  instance:
+    prefer-ip-address: true
+    ip-address: localhost
+
 spring:
   application:
     name: api-gateway-service
@@ -11,7 +19,7 @@ spring:
           routes:
             # Route requests to order-service
             - id: order-service-route
-              uri: http://localhost:8081
+              uri: lb://order-service
               predicates:
                 - Path=/order-service/**
               filters:
@@ -19,7 +27,7 @@ spring:
 
             # Route requests to payment-service
             - id: payment-service-route
-              uri: http://localhost:8082
+              uri: lb://payment-service
               predicates:
                 - Path=/payment-service/**
               filters:
@@ -27,7 +35,7 @@ spring:
 
             # Route requests to delivery-service
             - id: delivery-service-route
-              uri: http://localhost:8083
+              uri: lb://delivery-service
               predicates:
                 - Path=/delivery-service/**
               filters:

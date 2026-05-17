@@ -22,19 +22,19 @@ public class OrderDetailsController {
     public Mono<Map<String, Object>> getOrderDetails(@PathVariable Long orderId) {
         // Асинхронный запрос для получения данных о заказе
         Mono<String> orderResult = webClient.get()
-            .uri("http://localhost:8081/api/v1/orders/" + orderId)
+            .uri("http://order-service/api/v1/orders/" + orderId)
             .retrieve()
             .bodyToMono(String.class);
 
         // Асинхронный запрос для получения данных об оплате
         Mono<String> paymentResult = webClient.get()
-            .uri("http://localhost:8082/api/v1/payments/by-order/" + orderId)
+            .uri("http://payment-service/api/v1/payments/by-order/" + orderId)
             .retrieve()
             .bodyToMono(String.class);
 
         // Асинхронный запрос для получения данных о доставке
         Mono<String> deliveryResult = webClient.get()
-            .uri("http://localhost:8083/api/v1/deliveries/by-order/" + orderId)
+            .uri("http://delivery-service/api/v1/deliveries/by-order/" + orderId)
             .retrieve()
             .bodyToMono(String.class);
 
