@@ -1,0 +1,40 @@
+server:
+  port: 8085
+
+spring:
+  application:
+    name: api-gateway-service
+  cloud:
+    gateway:
+      server:
+        webflux:
+          routes:
+            # Route requests to order-service
+            - id: order-service-route
+              uri: http://localhost:8081
+              predicates:
+                - Path=/order-service/**
+              filters:
+                - StripPrefix=1
+
+            # Route requests to payment-service
+            - id: payment-service-route
+              uri: http://localhost:8082
+              predicates:
+                - Path=/payment-service/**
+              filters:
+                - StripPrefix=1
+
+            # Route requests to delivery-service
+            - id: delivery-service-route
+              uri: http://localhost:8083
+              predicates:
+                - Path=/delivery-service/**
+              filters:
+                - StripPrefix=1
+
+            # Route requests to the gateway's aggregated order-details endpoint
+            - id: order-details-route
+              uri: forward:/
+              predicates:
+                - Path=/api/v1/order-details/**
