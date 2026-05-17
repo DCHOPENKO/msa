@@ -42,4 +42,12 @@ subprojects {
     tasks.withType(Test).configureEach {
         useJUnitPlatform()
     }
+
+    plugins.withId('io.spring.dependency-management') {
+        dependencyManagement {
+            imports {
+                mavenBom "org.springframework.cloud:spring-cloud-dependencies:${springCloudVersion}"
+            }
+        }
+    }
 }

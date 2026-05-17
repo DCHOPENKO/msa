@@ -1,9 +1,17 @@
 server:
-  port: 8085
+  port: 8084
+
+eureka:
+  client:
+    service-url:
+      defaultZone: http://localhost:8761/eureka/
+  instance:
+    prefer-ip-address: true
+    ip-address: localhost
 
 spring:
   application:
-    name:order-history-service
+    name: order-history-service
 
   mongodb:
     uri: mongodb://localhost:27017/
