@@ -5,6 +5,7 @@ import com.iproddy.common.dto.kafka.OrderCreationStatusMessage;
 import com.iproddy.common.dto.kafka.PaymentCreationMessage;
 import com.iproddy.common.dto.kafka.PaymentRefundingMessage;
 import com.iproddy.orderservice.config.properties.KafkaTopicProperties;
+import com.iproddy.orderservice.kafla.producer.OrderCreationStatusMessageProducer;
 import com.iproddy.orderservice.mapper.DeliveryCreationMapper;
 import com.iproddy.orderservice.model.entity.Order;
 import com.iproddy.orderservice.service.OrderService;
@@ -23,6 +24,7 @@ public class OrderCreationSagaOrchestrator {
     private final DeliveryCreationMapper deliveryCreationMapper;
     private final KafkaTopicProperties kafkaTopicProperties;
     private final KafkaTemplate<String, Object> kafkaTemplate;
+    private final OrderCreationStatusMessageProducer orderCreationStatusMessageProducer;
 
     @KafkaListener(topics = "${kafka.topic.order-creation-status-topic}", groupId = "saga")
     public void handleSagaEvents(OrderCreationStatusMessage message) {
@@ -84,7 +86,7 @@ public class OrderCreationSagaOrchestrator {
                 .orderId(orderId)
                 .status(OrderCreationStatus.CANCELLED)
                 .build();
-        kafkaTemplate.send(kafkaTopicProperties.getOrderCreationStatusTopic(), message);
+        orderCreationStatusMessageProducer.send(message);
     }
 
     private void sendCompleteOrderMessage(long orderId) {
@@ -92,6 +94,6 @@ public class OrderCreationSagaOrchestrator {
                 .orderId(orderId)
                 .status(OrderCreationStatus.COMPLETED)
                 .build();
-        kafkaTemplate.send(kafkaTopicProperties.getOrderCreationStatusTopic(), message);
+        orderCreationStatusMessageProducer.send(message);
     }
 }

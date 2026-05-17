@@ -5,6 +5,7 @@ import com.iproddy.common.dto.kafka.OrderCreationStatus;
 import com.iproddy.common.dto.kafka.OrderCreationStatusMessage;
 import com.iproddy.deliveryservice.kafka.producer.OrderCreationStatusMessageProducer;
 import com.iproddy.deliveryservice.mapper.DeliveryMapper;
+import com.iproddy.deliveryservice.mapper.OrderCreationStatusMessageMapper;
 import com.iproddy.deliveryservice.model.entity.Delivery;
 import com.iproddy.deliveryservice.model.enums.DeliveryStatus;
 import lombok.RequiredArgsConstructor;
@@ -20,6 +21,7 @@ public class DeliveryFacade {
 
     private final DeliveryService deliveryService;
     private final DeliveryMapper deliveryMapper;
+    private final OrderCreationStatusMessageMapper orderCreationStatusMapper;
     private final OrderCreationStatusMessageProducer orderCreationStatusMessageProducer;
     private final Random random = new Random();
 
@@ -37,15 +39,12 @@ public class DeliveryFacade {
         OrderCreationStatus orderCreationStatus = isTrue ? OrderCreationStatus.DELIVERY_COMPLETED : OrderCreationStatus.DELIVERY_CANCELLED;
 
         deliveryService.setStatus(saved, deliveryStatus);
-        sendOrderCreationStatusMessage(message.orderId(), orderCreationStatus);
+        sendOrderCreationStatusMessage(saved, orderCreationStatus);
         log.info("Shipment with id {} for order (id: {}) was {}.",saved.getId(), message.orderId(), isTrue ? "delivered" : "cancelled");
     }
 
-    private void sendOrderCreationStatusMessage(long orderId, OrderCreationStatus status) {
-        OrderCreationStatusMessage message = OrderCreationStatusMessage.builder()
-                .orderId(orderId)
-                .status(status)
-                .build();
+    private void sendOrderCreationStatusMessage(Delivery delivery, OrderCreationStatus status) {
+        OrderCreationStatusMessage message = orderCreationStatusMapper.toEvent(delivery, status);
         orderCreationStatusMessageProducer.send(message);
     }
 }
