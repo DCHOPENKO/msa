@@ -28,6 +28,11 @@ public class DeliveryService {
                 .orElseThrow(() -> new NotFoundException("Delivery with id: %s not found".formatted(id)));
     }
 
+    @Transactional(readOnly = true)
+    public Delivery findByOrderId(Long id) {
+        return deliveryRepository.findByOrderId(id);
+    }
+
     public Delivery save(Delivery entity) {
         entity.setId(null);
         entity.setStatus(DeliveryStatus.CREATED);

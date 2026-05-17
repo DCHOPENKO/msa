@@ -45,6 +45,12 @@ public class PaymentController implements PaymentControllerDoc {
         return paymentMapper.toResponse(payment);
     }
 
+    @GetMapping("/by-order/{orderId}")
+    public PaymentDto.Response.Base findByOrderId(@PathVariable Long orderId) {
+        Payment payment = paymentService.findByOrderId(orderId);
+        return paymentMapper.toResponse(payment);
+    }
+
     @Override
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)

@@ -45,6 +45,12 @@ public class DeliveryController implements DeliveryControllerDoc {
         return deliveryMapper.toResponse(delivery);
     }
 
+    @GetMapping("/by-order/{orderId}")
+    public DeliveryDto.Response.Base findByOrderId(@PathVariable Long orderId) {
+        Delivery delivery = deliveryService.findByOrderId(orderId);
+        return deliveryMapper.toResponse(delivery);
+    }
+
     @Override
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping
